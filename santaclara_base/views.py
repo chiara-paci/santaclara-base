@@ -2,7 +2,7 @@ import json
 
 from django.http import HttpResponseRedirect,HttpResponse,HttpResponseBadRequest
 from django.contrib.auth.models import User
-from django.views.generic import ListView,UpdateView,CreateView,RedirectView,DeleteView,DetailView
+from django.views.generic import ListView,UpdateView,CreateView,RedirectView,DeleteView,DetailView,TemplateView
 from django.shortcuts import get_object_or_404,render
 
 from santaclara_base.models import Annotation,Tagging,Tag,Comment,Version
@@ -12,6 +12,10 @@ from santaclara_base.moderators import moderator
 from santaclara_base.forms import AnnotationForm,TaggingForm,CommentForm,VersionForm
 
 import santaclara_base.settings as settings
+
+class JSTemplateView(TemplateView):
+    def render_to_response(self, context, **kwargs):
+        return super(JSTemplateView, self).render_to_response(context,content_type='application/javascript', **kwargs)
 
 class ByUserListView(ListView):
     def get_queryset(self):
