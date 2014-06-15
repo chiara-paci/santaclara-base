@@ -1,0 +1,31 @@
+{% load i18n %}
+
+<div id="{{ scope }}-annotation-container">
+  <div class="note" id="{{ scope }}-annotation-template">
+    <!-- <a name="lastnote"></a>-->
+    <a name="" id="{{ scope }}-annotation-anchor"></a>
+    <img id="{{ scope }}-annotation-created-by-avatar" class="avatar"/>
+    <div class="noteheader">
+      <span id="{{ scope }}-annotation-created-by-name"></span> - <span id="{{ scope }}-annotation-created"></span>
+      <span id="{{ scope }}-annotation-last-modified-container">({% trans "last modified" %}: <span id="{{ scope }}-annotation-last-modified-by-name"></span> - <span id="{{ scope }}-annotation-last-modified"></span>)</span>
+    </div>
+    <div class="notecontent" id="{{ scope }}-annotation-text"></div>
+    <div class="notecontent" id="{{ scope }}-annotation-raw-text"></div>
+    <div class="commands">{% spaceless %}
+      <a id="{{ scope }}-annotation-save-button">{% trans "save" %}</a>
+      <a id="{{ scope }}-annotation-edit-button">{% trans "edit" %}</a>
+      <a id="{{ scope }}-annotation-delete-button">{% trans "delete" %}</a>
+      {% endspaceless %}</div>
+  </div>
+</div>
+
+<a name="{{ scope }}-annotation-formreply"></a>
+
+<div class="form" data-url="/base/json/annotations/add" id="{{ scope }}-annotation-form">
+  {% csrf_token %}
+  <div id="{{ scope }}-annotation-form-text"></div>
+  <input id="{{ scope }}-annotation-form-object-id" name="object_id" type="hidden" />
+  <input id="{{ scope }}-annotation-form-content-type" name="content_type" type="hidden" />
+  <div class="commands"><a id="{{ scope }}-annotation-add-button">{% trans "add annotation" %}</a></div>
+</div>
+

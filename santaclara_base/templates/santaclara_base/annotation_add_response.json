@@ -1,0 +1,14 @@
+{% load humanize %}
+{% load santa_clara_editor %}
+
+{
+    "id": {{ annotation.id }},
+    "text": "{{ annotation.text|santa_clara_simple }}",
+    "raw_text": "{{ annotation.text|santa_clara_raw }}",
+    "content_type_id": {{ annotation.content_type.id }},
+    "object_id": {{ annotation.object_id }},
+    "created_by": {% include "profiles/includes/user.json" with user=annotation.created_by %},
+    "created": "{{ annotation.created|naturalday:"j M Y" }}, {{ annotation.created|time:"H:i" }}",
+    "json_update_url": "{{ annotation.get_json_update_url }}",
+    "json_delete_url": "{{ annotation.get_json_delete_url }}"
+}

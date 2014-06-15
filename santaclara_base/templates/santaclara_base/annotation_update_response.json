@@ -1,0 +1,10 @@
+{% load humanize %}
+{% load santa_clara_editor %}
+
+{
+    "id": {{ annotation.id }},
+    "text": "{{ annotation.text|santa_clara_simple }}",
+    "raw_text": "{{ annotation.text|santa_clara_raw }}",
+    "modified_by": {% include "profiles/includes/user.json" with user=annotation.modified_by %},
+    "last_modified": "{{ annotation.last_modified|naturalday:"j M Y" }}, {{ annotation.last_modified|time:"H:i" }}"
+}

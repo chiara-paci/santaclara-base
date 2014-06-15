@@ -1,0 +1,20 @@
+{% load santa_clara_editor %}
+{% load humanize %}
+
+[
+    {% for annotation in annotation_list %}
+    {
+	"id": {{ annotation.id }},
+	"text": "{{ annotation.text|santa_clara_simple }}",
+	"raw_text": "{{ annotation.text|santa_clara_raw }}",
+	"content_type_id": {{ annotation.content_type.id }},
+	"object_id": {{ annotation.object_id }},
+	"created_by": {% include "profiles/includes/user.json" with user=annotation.created_by %},
+	"created": "{{ annotation.created|naturalday:"j M Y" }}, {{ annotation.created|time:"H:i" }}",
+	"modified_by": {% include "profiles/includes/user.json" with user=annotation.modified_by %},
+	"last_modified": "{{ annotation.last_modified|naturalday:"j M Y" }}, {{ annotation.last_modified|time:"H:i" }}",
+	"json_update_url": "{{ annotation.get_json_update_url }}",
+	"json_delete_url": "{{ annotation.get_json_delete_url }}"
+    }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+]

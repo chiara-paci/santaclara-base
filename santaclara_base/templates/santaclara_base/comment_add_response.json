@@ -1,0 +1,28 @@
+{% load humanize %}
+{% load santa_clara_editor %}
+
+{
+    "id": {{ comment.id }},
+    "text": "{{ comment.text|santa_clara_simple }}",
+    "raw_text": "{{ comment.text|santa_clara_raw }}",
+    "is_public": {{ comment.is_public|lower }},
+    "is_removed": {{ comment.is_removed|lower }},
+    "content_type_id": {{ comment.content_type.id }},
+    "object_id": {{ comment.object_id }},
+    "created_by": {% include "profiles/includes/user.json" with user=comment.created_by %},
+    "created": "{{ comment.created|naturalday:"j M Y" }}, {{ comment.created|time:"H:i" }}",
+    {% if user == comment.created_by %}
+    "is_owner": true,
+    {% else %}
+    "is_owner": false,
+    {% endif %}
+    {% if user.is_staff %}
+    "admin_url": "/admin/comments/comment/{{ comment.id }}/",
+    "is_staff": true,
+    {% endif %}
+    {% if user == comment.created_by or user.is_staff %}
+    "raw_text": "{{ comment.text|santa_clara_raw }}",
+    "json_update_url": "{{ comment.get_json_update_url }}",
+    "json_delete_url": "{{ comment.get_json_delete_url }}"
+    {% endif %}		   
+}

@@ -1,0 +1,40 @@
+{% load i18n %}
+
+<div id="{{ scope }}-version-container">
+  <div id="{{ scope }}-version-template">
+    <div class="note">
+    <!-- <a name="lastnote"></a>-->
+    <a name="" id="{{ scope }}-version-anchor"></a>
+    <img id="{{ scope }}-version-created-by-avatar" class="avatar"/>
+    <div class="noteheader">
+      <span id="{{ scope }}-version-created-by-name"></span> - <span id="{{ scope }}-version-created"></span>
+      <span id="{{ scope }}-version-last-modified-container">({% trans "last modified" %}: <span id="{{ scope }}-version-last-modified-by-name"></span> - <span id="{{ scope }}-version-last-modified"></span>)</span>
+    </div>
+    {% trans "label" %}: <input type="text" id="{{ scope }}-version-input-label"/><span id="{{ scope }}-version-label"></span>
+    <input type="checkbox" id="{{ scope }}-version-input-valid"/><i id="{{ scope }}-version-valid" class="fa fa-check-square-o"></i><i id="{{ scope }}-version-not-valid" class="fa fa-square-o"></i>{% trans "valid" %}
+    <div class="notecontent" id="{{ scope }}-version-text"></div>
+    <div class="notecontent" id="{{ scope }}-version-raw-text"></div>
+    <div class="commands">{% spaceless %}
+      <a id="{{ scope }}-version-save-button">{% trans "save" %}</a>
+      <a id="{{ scope }}-version-edit-button">{% trans "edit" %}</a>
+      <a id="{{ scope }}-version-delete-button">{% trans "delete" %}</a>
+      {% endspaceless %}</div>
+  </div>
+  <div class="note" id="{{ scope }}-version-removed-template">
+    <div class="notecontent" id="{{ scope }}-version-text"></div>
+  </div>
+  </div>
+</div>
+
+<a name="{{ scope }}-version-formreply"></a>
+
+<div class="form" data-url="/base/json/versions/add" id="{{ scope }}-version-form">
+  {% csrf_token %}
+  {% trans "label" %}: <input type="text" id="{{ scope }}-version-input-label"/>
+  <input type="checkbox" id="{{ scope }}-version-form-valid" name="valid"/>{% trans "valid" %}
+  <div id="{{ scope }}-version-form-text"></div>
+  <input id="{{ scope }}-version-form-object-id" name="object_id" type="hidden" />
+  <input id="{{ scope }}-version-form-content-type" name="content_type" type="hidden" />
+  <div class="commands"><a id="{{ scope }}-version-add-button">{% trans "add version" %}</a></div>
+</div>
+

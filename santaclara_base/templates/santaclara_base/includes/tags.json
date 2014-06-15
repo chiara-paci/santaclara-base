@@ -1,0 +1,16 @@
+{% load santa_clara_editor %}
+{% load humanize %}
+
+[
+    {% for tag in tag_list %}
+    {
+	"id": {{ tag.id }},
+	"label_id": {{ tag.label.id }},
+	"label": "{{ tag.label }}",
+	"created_by": {% include "profiles/includes/user.json" with user=tag.created_by %},
+	"created": "{{ tag.created|naturalday:"j M Y" }}, {{ tag.created|time:"H:i" }}",
+	"modified_by": {% include "profiles/includes/user.json" with user=tag.modified_by %},
+	"last_modified": "{{ tag.last_modified|naturalday:"j M Y" }}, {{ tag.last_modified|time:"H:i" }}"
+    }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+]

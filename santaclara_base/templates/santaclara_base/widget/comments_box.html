@@ -1,0 +1,34 @@
+{% load i18n %}
+
+<div id="{{ scope }}-comment-container">
+  <div class="note" id="{{ scope }}-comment-template">
+    <!-- <a name="lastnote"></a>-->
+    <a name="" id="{{ scope }}-comment-anchor"></a>
+    <img id="{{ scope }}-comment-created-by-avatar" class="avatar"/>
+    <div class="noteheader">
+      <span id="{{ scope }}-comment-created-by-name"></span> - <span id="{{ scope }}-comment-created"></span>
+      <span id="{{ scope }}-comment-last-modified-container">({% trans "last modified" %}: <span id="{{ scope }}-comment-last-modified-by-name"></span> - <span id="{{ scope }}-comment-last-modified"></span>)</span>
+    </div>
+    <div class="notecontent" id="{{ scope }}-comment-text"></div>
+    <div class="notecontent" id="{{ scope }}-comment-raw-text"></div>
+    <div class="commands">{% spaceless %}
+      <a id="{{ scope }}-comment-save-button">{% trans "save" %}</a>
+      <a id="{{ scope }}-comment-edit-button">{% trans "edit" %}</a>
+      <a id="{{ scope }}-comment-delete-button">{% trans "delete" %}</a>
+      {% endspaceless %}</div>
+  </div>
+  <div class="note" id="{{ scope }}-comment-removed-template">
+    <div class="notecontent" id="{{ scope }}-comment-text"></div>
+  </div>
+</div>
+
+<a name="{{ scope }}-comment-formreply"></a>
+
+<div class="form" data-url="/base/json/comments/add" id="{{ scope }}-comment-form">
+  {% csrf_token %}
+  <div id="{{ scope }}-comment-form-text"></div>
+  <input id="{{ scope }}-comment-form-object-id" name="object_id" type="hidden" />
+  <input id="{{ scope }}-comment-form-content-type" name="content_type" type="hidden" />
+  <div class="commands"><a id="{{ scope }}-comment-add-button">{% trans "add comment" %}</a></div>
+</div>
+

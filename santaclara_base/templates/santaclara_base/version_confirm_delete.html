@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load humanize %}
+{% load santa_clara_editor %}
+
+{% block title %} - {% trans "Delete version" %}{% endblock %}
+
+{% block content %}
+
+<div class="contentbox">
+<h1>{% trans "Confirm delete version" %}</h1>
+
+<div class="form">
+<form method="post" action="">
+{% trans "Are you sure you want to delete this version?" %}
+<div class="textbox">{{ object.text|santa_clara_simple }}</div>
+{% csrf_token %}
+<input type="hidden" name="next" value="{{ object.content_object.get_absolute_url }}"/>
+<input type="submit" value="yes" />
+<a class="button" href="{{ object.get_absolute_url }}">{% trans "undo" %}</a>
+</form>
+</div> 
+</div> 
+
+{% endblock %}
+
+

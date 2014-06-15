@@ -1,0 +1,13 @@
+{% load humanize %}
+{% load santa_clara_editor %}
+
+{
+    "id": {{ version.id }},
+    "text": "{{ version.text|santa_clara_simple }}",
+    "raw_text": "{{ version.text|santa_clara_raw }}",
+    "valid": {{ version.valid|lower }},
+    "is_current": {{ version.is_current|lower }},
+    "label": "{{ version.label }}",
+    "modified_by": {% include "profiles/includes/user.json" with user=version.modified_by %},
+    "last_modified": "{{ version.last_modified|naturalday:"j M Y" }}, {{ version.last_modified|time:"H:i" }}"
+}

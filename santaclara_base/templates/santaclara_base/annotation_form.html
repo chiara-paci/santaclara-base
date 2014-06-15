@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load humanize %}
+
+{% block title %} - {% trans "Add annotation" %}{% endblock %}
+
+{% block content %}
+
+<div class="contentbox">
+<h1>{% trans "Add annotation" %}</h1>
+
+<div class="form">
+<form method="post" action="">
+{% csrf_token %}
+
+{% if form.non_field_errors %}
+<p class="errors">{{ form.non_field_errors }}</p>
+{% endif %}
+{% if form.errors %}
+<p class="errors">{% trans "Title error" %}: {{ form.errors }}</p>
+{% if form.errors.title %}
+<p class="errors">{% trans "Title error" %}: {{ form.errors.title }}</p>
+{% endif %}
+{% if form.errors.text %}
+<p class="errors">{% trans "Text error" %}: {{ form.errors.text }}</p>
+{% endif %}
+{% endif %}
+
+{% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
+
+{{ form }}
+
+{% comment %}
+<p class="right"><span class="th">{% trans form.title.label_tag %}:</span> {{ form.title }}</p>
+
+<p>{{ form.text }}</p>
+
+{% endcomment %}
+
+<input type="submit" value="{% trans "save" %}" />
+<input type="reset" value="{% trans "reset" %}" />
+<a class="button" href="/accounts/profile/">{% trans "undo" %}</a>
+</form>
+</div> 
+</div> 
+
+{% endblock %}
+
+

@@ -1,0 +1,12 @@
+{% load humanize %}
+{% load santa_clara_editor %}
+
+{
+    "id": {{ comment.id }},
+    "text": "{{ comment.text|santa_clara_simple }}",
+    "raw_text": "{{ comment.text|santa_clara_raw }}",
+    "is_public": {{ comment.is_public|lower }},
+    "is_removed": {{ comment.is_removed|lower }},
+    "modified_by": {% include "profiles/includes/user.json" with user=comment.modified_by %},
+    "last_modified": "{{ comment.last_modified|naturalday:"j M Y" }}, {{ comment.last_modified|time:"H:i" }}"
+}

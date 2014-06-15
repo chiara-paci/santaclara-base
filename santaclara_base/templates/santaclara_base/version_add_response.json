@@ -1,0 +1,31 @@
+{% load humanize %}
+{% load santa_clara_editor %}
+
+{
+    "id": {{ version.id }},
+    "text": "{{ version.text|santa_clara_simple }}",
+    "raw_text": "{{ version.text|santa_clara_raw }}",
+    "valid": {{ version.valid|lower }},
+    "is_current": {{ version.is_current|lower }},
+    "label": "{{ version.label }}",
+    "content_type_id": {{ version.content_type.id }},
+    "object_id": {{ version.object_id }},
+    "created_by": {% include "profiles/includes/user.json" with user=version.created_by %},
+    "created": "{{ version.created|naturalday:"j M Y" }}, {{ version.created|time:"H:i" }}",
+    "count_words": "{{ version.count_words }}",
+    "count_characters": "{{ version.count_characters }}",
+    {% if user == version.created_by %}
+    "is_owner": true,
+    {% else %}
+    "is_owner": false,
+    {% endif %}
+    {% if user.is_staff %}
+    "admin_url": "/admin/base/version/{{ version.id }}/",
+    "is_staff": true,
+    {% endif %}
+    {% if user == version.created_by or user.is_staff %}
+    "raw_text": "{{ version.text|santa_clara_raw }}",
+    "json_update_url": "{{ version.get_json_update_url }}",
+    "json_delete_url": "{{ version.get_json_delete_url }}"
+    {% endif %}		   
+}

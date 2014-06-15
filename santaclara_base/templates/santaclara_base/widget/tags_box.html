@@ -1,0 +1,23 @@
+{% load i18n %}
+
+<div id="{{ scope }}-tag-container">
+  <div class="note" id="{{ scope }}-tag-template">
+    <div class="notecontent" id="{{ scope }}-tag-label"></div>
+    <div class="commands">{% spaceless %}
+      <a id="{{ scope }}-tag-save-button">{% trans "save" %}</a>
+      <a id="{{ scope }}-tag-edit-button">{% trans "edit" %}</a>
+      <a id="{{ scope }}-tag-delete-button">{% trans "delete" %}</a>
+      {% endspaceless %}</div>
+  </div>
+</div>
+
+<a name="{{ scope }}-tag-formreply"></a>
+
+<div class="form" data-url="/base/json/tags/add" id="{{ scope }}-tag-form">
+  {% csrf_token %}
+  <input id="{{ scope }}-tag-form-text" name="" type="text"></div>
+  <input id="{{ scope }}-tag-form-object-id" name="object_id" type="hidden" />
+  <input id="{{ scope }}-tag-form-content-type" name="content_type" type="hidden" />
+  <div class="commands"><a id="{{ scope }}-tag-add-button">{% trans "add tag" %}</a></div>
+</div>
+
