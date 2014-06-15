@@ -11,10 +11,11 @@ setup(
     version='0.1',
     packages=['santaclara_base'],
     package_data={'santaclara_base': [
-            "management/*",
+            "management/__init__.py",
             "management/commands/*",
             "static/santaclara_base/*",
-            "templates/santaclara_base/*",
+            "templates/santaclara_base/*.html",
+            "templates/santaclara_base/*.json",
             "templates/santaclara_base/widget/*",
             "templates/santaclara_base/includes/*",
             "sql/*",
