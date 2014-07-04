@@ -8,7 +8,7 @@ from santaclara_base.forms  import VersionAdminForm
 class CommentInline(generic.GenericStackedInline):
     model = Comment
     extra = 0
-    ordering = [ 'submit_date' ]
+    ordering = [ 'created' ]
     ct_fk_field = 'object_pk'
 
 class TimestampAdmin(admin.ModelAdmin):
