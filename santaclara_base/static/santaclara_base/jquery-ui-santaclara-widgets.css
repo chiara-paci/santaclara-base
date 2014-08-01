@@ -1,0 +1,15 @@
+/*** treeview ***/
+
+.green .sc-tree-data:hover,
+.green .sc-tree-data:active {
+    color: {{ COLOR_GREEN_LINK_ACTIVE_FORE }};
+    background-color: {{ COLOR_GREEN_LINK_ACTIVE_BACK }};
+    cursor: pointer;
+}
+
+.blue .sc-tree-data:hover,
+.blue .sc-tree-data:active {
+    color: {{ COLOR_BLUE_LINK_ACTIVE_FORE }};
+    background-color: {{ COLOR_BLUE_LINK_ACTIVE_BACK }};
+    cursor: pointer;
+}
