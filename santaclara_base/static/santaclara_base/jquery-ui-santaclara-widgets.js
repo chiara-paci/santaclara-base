@@ -86,8 +86,8 @@ $("#tabid").treeview({title_column: "rif",first_label: "prima"});
 		if (!$(this).data("has_children")) {
 		    $(this).click(function(event){
 			event.preventDefault();
-			opts.click_pre(event,$(this));
-			opts.click_on(event,$(this));
+			if (opts.click_pre) opts.click_pre(event,$(this));
+			if (opts.click_on) opts.click_on(event,$(this));
 		    });
 		    return
 		}
@@ -97,7 +97,7 @@ $("#tabid").treeview({title_column: "rif",first_label: "prima"});
 		    var icon=$(this).children().find("i.fa").first();
 		    var act_on=$(this).data("label_children");
 		    var status=$(this).data("status");
-		    opts.click_pre(event,$(this));
+		    if (opts.click_pre) opts.click_pre(event,$(this));
 		    if (status=="closed") {
 			$("tr[data-label='"+act_on+"']").show();
 			$(this).data("status","open");
@@ -110,7 +110,7 @@ $("#tabid").treeview({title_column: "rif",first_label: "prima"});
 			icon.removeClass("fa-"+opts.row_open);
 			icon.addClass("fa-"+opts.row_close);
 		    }
-		    opts.click_on(event,$(this));
+		    if (opts.click_on) opts.click_on(event,$(this));
 		});
 	    });
 	},
