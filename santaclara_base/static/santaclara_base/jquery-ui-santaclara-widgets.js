@@ -115,7 +115,7 @@ $("#tabid").treeview({title_column: "rif",first_label: "prima"});
 	    var el=self.element;
 	    el.find("tr.sc-tree-data").each(function(){
 		self.set_logic_on_row($(this));
-	    });/* .each(function(){
+	    });/* .each(function(){ */
 	},
     }); // sc.sc_treeview
 
