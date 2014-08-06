@@ -58,61 +58,64 @@ $("#tabid").treeview({title_column: "rif",first_label: "prima"});
 	    el.addClass("sc-treeview");
 	    self.set_logic();
 	},
+	set_logic_on_row: function(row){
+	    var oldhtml=row.html();
+	    var tdtitle=row.children("td[data-label='"+opts.title_column+"']").first();
+	    var indent=0;
+	    var prefix="";
+	    var postfix="";
+	    if (row.data("has_children")) {
+		if (opts.row_close) 
+		    prefix+="<i class=\"fa fa-"+opts.row_close+"\"></i>&nbsp;";
+	    }
+	    else {
+		if (opts.row_element) 
+		    prefix="<i class=\"fa fa-"+opts.row_element+"\"></i>&nbsp;";
+	    }
+	    for(n=0;n<row.data("level");n++) indent+=opts.indent;
+	    tdtitle.css({"text-align":"left","padding-left":indent+"em"});
+	    tdtitle.html(prefix+tdtitle.html()+postfix);
+	    if (row.data("label")==opts.first_label) 
+		row.show();
+	    else 
+		row.hide();
+	    if (!row.data("has_children")) {
+		row.click(function(event){
+		    event.preventDefault();
+		    if (opts.click_pre) opts.click_pre(event,row);
+		    if (opts.click_on) opts.click_on(event,row);
+		});
+		return
+	    }
+	    row.data("status","closed");
+	    row.click(function(event){
+		event.preventDefault();
+		var icon=row.children().find("i.fa").first();
+		var act_on=row.data("label_children");
+		var status=row.data("status");
+		if (opts.click_pre) opts.click_pre(event,row);
+		if (status=="closed") {
+		    $("tr[data-label='"+act_on+"']").show();
+		    row.data("status","open");
+		    icon.removeClass("fa-"+opts.row_close);
+		    icon.addClass("fa-"+opts.row_open);
+		}
+		else {
+		    $("tr[data-label^='"+act_on+"']").hide();
+		    row.data("status","closed");
+		    icon.removeClass("fa-"+opts.row_open);
+		    icon.addClass("fa-"+opts.row_close);
+		}
+		if (opts.click_on) opts.click_on(event,row);
+	    });
+	},
 	set_logic: function(){
 	    var self=this;
 	    var opts=self.options;
 	    var el=self.element;
 	    el.find("tr.sc-tree-data").each(function(){
-		var oldhtml=$(this).html();
-		var tdtitle=$(this).children("td[data-label='"+opts.title_column+"']").first();
-		var indent=0;
-		var prefix="";
-		var postfix="";
-		if ($(this).data("has_children")) {
-		    if (opts.row_close) 
-			prefix+="<i class=\"fa fa-"+opts.row_close+"\"></i>&nbsp;";
-		}
-		else {
-		    if (opts.row_element) 
-			prefix="<i class=\"fa fa-"+opts.row_element+"\"></i>&nbsp;";
-		}
-		for(n=0;n<$(this).data("level");n++) indent+=opts.indent;
-		tdtitle.css({"text-align":"left","padding-left":indent+"em"});
-		tdtitle.html(prefix+tdtitle.html()+postfix);
-		if ($(this).data("label")==opts.first_label) 
-		    $(this).show();
-		else 
-		    $(this).hide();
-		if (!$(this).data("has_children")) {
-		    $(this).click(function(event){
-			event.preventDefault();
-			if (opts.click_pre) opts.click_pre(event,$(this));
-			if (opts.click_on) opts.click_on(event,$(this));
-		    });
-		    return
-		}
-		$(this).data("status","closed");
-		$(this).click(function(event){
-		    event.preventDefault();
-		    var icon=$(this).children().find("i.fa").first();
-		    var act_on=$(this).data("label_children");
-		    var status=$(this).data("status");
-		    if (opts.click_pre) opts.click_pre(event,$(this));
-		    if (status=="closed") {
-			$("tr[data-label='"+act_on+"']").show();
-			$(this).data("status","open");
-			icon.removeClass("fa-"+opts.row_close);
-			icon.addClass("fa-"+opts.row_open);
-		    }
-		    else {
-			$("tr[data-label^='"+act_on+"']").hide();
-			$(this).data("status","closed");
-			icon.removeClass("fa-"+opts.row_open);
-			icon.addClass("fa-"+opts.row_close);
-		    }
-		    if (opts.click_on) opts.click_on(event,$(this));
-		});
-	    });
+		self.set_logic_on_row($(this));
+	    });/* .each(function(){
 	},
     }); // sc.sc_treeview
 
