@@ -48,7 +48,8 @@ $("#tabid").treeview({title_column: "rif",first_label: "prima"});
 	    row_close: "caret-right",
 	    row_open: "caret-down",
 	    row_element: "",
-	    click_on: null
+	    click_on: null,
+	    click_pre: null
 	},
 	_create: function(){
 	    var self=this;
@@ -85,6 +86,7 @@ $("#tabid").treeview({title_column: "rif",first_label: "prima"});
 		if (!$(this).data("has_children")) {
 		    $(this).click(function(event){
 			event.preventDefault();
+			opts.click_pre(event,$(this));
 			opts.click_on(event,$(this));
 		    });
 		    return
@@ -95,6 +97,7 @@ $("#tabid").treeview({title_column: "rif",first_label: "prima"});
 		    var icon=$(this).children().find("i.fa").first();
 		    var act_on=$(this).data("label_children");
 		    var status=$(this).data("status");
+		    opts.click_pre(event,$(this));
 		    if (status=="closed") {
 			$("tr[data-label='"+act_on+"']").show();
 			$(this).data("status","open");
