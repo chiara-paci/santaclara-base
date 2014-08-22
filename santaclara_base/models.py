@@ -211,7 +211,7 @@ class VersionedAbstract(models.Model):
                 if v==self.current:
                     self.current.is_current=True
                     self.current.save()
-                    print "set_current as new current"
+                    print "set_current as valid current"
                     return
                 v.is_current=True
                 v.save()
@@ -219,7 +219,7 @@ class VersionedAbstract(models.Model):
                 self.current.save()
                 self.current=v
                 self.save()
-                print "set_current as new non current"
+                print "set_current as valid non current -> current"
                 return
         v=qset[0]
         v.valid=True
@@ -227,13 +227,13 @@ class VersionedAbstract(models.Model):
         if v==self.current:
             self.current.is_current=True
             self.current.save()
-            print "set_current as current"
+            print "set_current as non valid current"
             return
         self.current.is_current=False
         self.current.save()
         self.current=v
         self.save()
-        print "set_current as non current"
+        print "set_current as non valid non current -> current"
 
     def save_text(self,request,text,as_new_version=True):
         if self.current.id==0:
