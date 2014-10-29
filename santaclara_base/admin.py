@@ -9,7 +9,6 @@ class CommentInline(generic.GenericStackedInline):
     model = Comment
     extra = 0
     ordering = [ 'created' ]
-    ct_fk_field = 'object_pk'
 
 class TimestampAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
