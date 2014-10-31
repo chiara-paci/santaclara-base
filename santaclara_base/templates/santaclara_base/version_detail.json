@@ -17,11 +17,6 @@
     "last_modified": "{{ version.last_modified|naturalday:"j M Y" }}, {{ version.last_modified|time:"H:i" }}",
     "count_words": "{{ version.count_words }}",
     "count_characters": "{{ version.count_characters }}",
-    {% if user == version.created_by %}
-    "is_owner": true,
-    {% else %}
-    "is_owner": false,
-    {% endif %}
     {% if user.is_staff %}
     "admin_url": "/admin/base/version/{{ version.id }}/",
     "is_staff": true,
@@ -29,6 +24,12 @@
     {% if user == version.created_by or user.is_staff %}
     "raw_text": "{{ version.text|santa_clara_raw }}",
     "json_update_url": "{{ version.get_json_update_url }}",
-    "json_delete_url": "{{ version.get_json_delete_url }}"
+    "json_delete_url": "{{ version.get_json_delete_url }}",
     {% endif %}		   
+    {% if user == version.created_by %}
+    "is_owner": true
+    {% else %}
+    "is_owner": false
+    {% endif %}
+
 }
