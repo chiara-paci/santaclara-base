@@ -4,6 +4,6 @@
 
 [
     {% for version in version_list %}
-    {% include "base/version_detail.json" %}{% if not forloop.last %},{% endif %}
+    {% include "santaclara_base/version_detail.json" %}{% if not forloop.last %},{% endif %}
     {% endfor %}  
 ]
