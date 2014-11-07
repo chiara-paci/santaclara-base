@@ -85,7 +85,7 @@ class JsonByObjectGenericListView(ListView):
 
 class JsonDetailView(DetailView): 
     def render_to_response(self, context, **kwargs):
-        return super(JsonDetailView, self).render_to_response(context,content_type='application/json', **kwargs)
+        return super(JsonDetailView, self).render_to_response(context,content_type='application/json; charset=utf8', **kwargs)
 
     def get_template_names(self):
         L=super(JsonDetailView, self).get_template_names()
