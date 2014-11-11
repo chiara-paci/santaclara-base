@@ -299,6 +299,8 @@ class DisplayedAbstract(models.Model):
 
 ###
 
+RE_NAME_SEP=re.compile("('| |-)")
+
 class LabeledAbstract(models.Model):
     label = models.SlugField(unique=True)
     description = models.CharField(max_length=1024)
