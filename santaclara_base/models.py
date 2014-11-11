@@ -299,6 +299,20 @@ class DisplayedAbstract(models.Model):
 
 ###
 
+class LabeledAbstract(models.Model):
+    label = models.SlugField(unique=True)
+    description = models.CharField(max_length=1024)
+
+    class Meta:
+        abstract = True
+
+    def __unicode__(self):
+        return unicode(self.label)
+
+    def clean(self,*args,**kwargs):
+        self.label = self.label.lower()
+        super(LabeledAbstract, self).clean(*args, **kwargs)
+
 class NameFormat(LabeledAbstract):
     pattern = models.CharField(max_length=1024)
 
