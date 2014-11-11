@@ -8,7 +8,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='santaclara_base',
-    version='0.2.0.3',
+    version='0.2.0.4',
     packages=['santaclara_base'],
     package_data={'santaclara_base': [
             "management/__init__.py",
@@ -19,6 +19,7 @@ setup(
             "templates/santaclara_base/widget/*",
             "templates/santaclara_base/includes/*",
             "sql/*",
+            "fixtures/*",
             ]},
     include_package_data=True,
     license='GNU General Public License v3 or later (GPLv3+)',  # example license
