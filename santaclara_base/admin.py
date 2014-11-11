@@ -3,6 +3,7 @@ from django.contrib.contenttypes import generic
 from django import forms
 
 from santaclara_base.models import Version,Annotation,Tag,Tagging,Comment
+from santaclara_base.models import NameFormat,NameType,NameFormatCollection
 from santaclara_base.forms  import VersionAdminForm
 
 class CommentInline(generic.GenericStackedInline):
@@ -72,3 +73,16 @@ VersionedObjectAdmin=xed_object_admin_factory([Version])
 AnnotatedObjectAdmin=xed_object_admin_factory([Annotation])
 AnnotatedVersionedObjectAdmin=xed_object_admin_factory([Annotation,Version])
 
+admin.site.register(NameType)
+
+class NameFormatAdmin(admin.ModelAdmin):
+    list_display= ['label','pattern','description']
+    list_editable = ['pattern']
+
+admin.site.register(NameFormat,NameFormatAdmin)
+
+class NameFormatCollectionAdmin(admin.ModelAdmin):
+    list_display= ['label','description','long_format','short_format','list_format','ordering_format']
+    list_editable = ['long_format','short_format','list_format','ordering_format']
+
+admin.site.register(NameFormatCollection,NameFormatCollectionAdmin)

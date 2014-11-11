@@ -62,7 +62,6 @@ class TimestampAbstract(models.Model):
     def user(self):
         return self.created_by
 
-
 class VersionManager(models.Manager):
     def all_valid(self):
         return self.all().filter(valid=True)
@@ -298,3 +297,106 @@ class DisplayedAbstract(models.Model):
         abstract = True
 
 
+###
+
+class NameFormat(LabeledAbstract):
+    pattern = models.CharField(max_length=1024)
+
+    class Meta:
+        ordering = ["label"]
+
+    def save(self, *args, **kwargs):
+        super(NameFormat, self).save(*args, **kwargs)
+        for coll in self.long_format_set.all():
+            coll.save()
+        for coll in self.short_format_set.all():
+            coll.save()
+        for coll in self.ordering_format_set.all():
+            coll.save()
+        for coll in self.list_format_set.all():
+            coll.save()
+
+class NameType(LabeledAbstract): pass
+
+class NameFormatCollection(LabeledAbstract):
+    long_format = models.ForeignKey(NameFormat,related_name='long_format_set')
+    short_format = models.ForeignKey(NameFormat,related_name='short_format_set')
+    list_format = models.ForeignKey(NameFormat,related_name='list_format_set')
+    ordering_format = models.ForeignKey(NameFormat,related_name='ordering_format_set')
+
+    def save(self, *args, **kwargs):
+        super(NameFormatCollection, self).save(*args, **kwargs)
+        for character in self.character_set.all():
+            character.update_cache()
+
+    ### Sintassi dei formati
+    #   {{<name_type>}}: <name_type> 
+    #   {{C|<name_type>}}: <name_type> (capitalized)
+    #   {{V|<name_type>}}: <name_type> (capitalized except von, de, ecc.)
+    #   {{L|<name_type>}}: <name_type> (lowered)
+    #   {{U|<name_type>}}: <name_type> (uppered)
+    #   {{A|<name_type>}}: <name_type> as integer in arabic 
+    #   {{R|<name_type>}}: <name_type> as integer in roman upper
+    #   {{N|<name_type>}}: <name_type> (lowered and with space => _)
+    #   {{I|<name_type>}}: iniziali (Gian Uberto => G. U.)
+
+    def apply_formats(self,names):
+        vons=["von","di","da","del","della","dell","dello","dei","degli","delle","de","d",
+              "dal","dalla","dall","dallo","dai","dagli","dalle","al","ibn"]
+        romans=["I","II","III","IV","V","VI","VII","VIII","IX","X",
+                "XI","XII","XIII","XIV","XV","XVI","XVII","XVIII","XIX","XX",
+                "XXI","XXII","XXIII","XXIV","XXV","XXVI","XXVII","XXVIII","XXIX","XXX",
+                "XXXI","XXXII","XXXIII","XXXIV","XXXV","XXXVI","XXXVII","XXXVIII","XXXIX","XL",
+                "XLI","XLII","XLIII","XLIV","XLV","XLVI","XLVII","XLVIII","XLIX","L"]
+
+        long_name=unicode(self.long_format.pattern)
+        short_name=unicode(self.short_format.pattern)
+        list_name=unicode(self.list_format.pattern)
+        ordering_name=unicode(self.ordering_format.pattern)
+        for key,val in names.items():
+            val_f={}
+            t=RE_NAME_SEP.split(val)
+            #t=map(lambda x: x.capitalize(),RE_NAME_SEP.split(val))
+            vons_t=[]
+            norm_t=[]
+            for x in t:
+                if x.lower() in vons:
+                    vons_t.append(x.lower())
+                else:
+                    if len(x)==1 and x.isalpha():
+                        vons_t.append(x+".")
+                    else:
+                        vons_t.append(x)
+                if len(x)==1 and x.isalpha():
+                    norm_t.append(x+".")
+                else:
+                    norm_t.append(x)
+                    
+            cap_t=map(lambda x: x.capitalize(),norm_t)
+            val_norm="".join(norm_t)
+            val_f["L"]=val.lower()
+            val_f["U"]=val.upper()
+            val_f["N"]=val.lower().replace(" ","_")
+            val_f["I"]=". ".join(map(lambda x: x[0].upper(),filter(bool,val.split(" "))))+"."
+            val_f["C"]="".join(cap_t)
+            val_f["V"]="".join(vons_t)
+
+            if val.isdigit():
+                val_f["R"]=romans[int(val)-1]
+                val_f["A"]="%3.3d" % int(val)
+            else:
+                val_f["R"]=""
+                val_f["A"]=""
+
+            long_name=long_name.replace("{{"+key+"}}",val_norm)
+            short_name=short_name.replace("{{"+key+"}}",val_norm)
+            list_name=list_name.replace("{{"+key+"}}",val_norm)
+            ordering_name=ordering_name.replace("{{"+key+"}}",val_norm)
+
+            for k in "VALURNIC":
+                long_name=long_name.replace("{{"+k+"|"+key+"}}",val_f[k])
+                short_name=short_name.replace("{{"+k+"|"+key+"}}",val_f[k])
+                list_name=list_name.replace("{{"+k+"|"+key+"}}",val_f[k])
+                ordering_name=ordering_name.replace("{{"+k+"|"+key+"}}",val_f[k])
+
+        return long_name,short_name,list_name,ordering_name
