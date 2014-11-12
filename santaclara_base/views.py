@@ -122,6 +122,22 @@ class JsonCreateView(CreateView):
         response = super(JsonCreateView, self).form_invalid(form)
         return HttpResponse(json.dumps(form.errors),status=400,content_type='application/json')
 
+class JsonCreateTimestampView(CreateView):
+    template_name_json_response = "santaclara_base/create_response.json"
+
+    def form_valid(self,form): 
+        form.instance.modified_by=self.request.user
+        form.instance.created_by=self.request.user
+        response = super(JsonCreateView, self).form_valid(form)
+        self.object = form.save(commit=True)
+        return render(self.request,self.template_name_json_response,
+                      {'object': self.object},
+                      content_type='application/json')
+
+    def form_invalid(self, form):
+        response = super(JsonCreateView, self).form_invalid(form)
+        return HttpResponse(json.dumps(form.errors),status=400,content_type='application/json')
+
 class JsonUpdateView(UpdateView):
     template_name_json_response = "santaclara_base/update_response.json"
 
