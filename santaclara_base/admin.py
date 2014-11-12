@@ -82,7 +82,7 @@ class NameFormatAdmin(admin.ModelAdmin):
 admin.site.register(NameFormat,NameFormatAdmin)
 
 class NameFormatCollectionAdmin(admin.ModelAdmin):
-    list_display= ['label','description','long_format','short_format','list_format','ordering_format']
+    list_display= ['label','description','required_name_types','long_format','short_format','list_format','ordering_format']
     list_editable = ['long_format','short_format','list_format','ordering_format']
 
 admin.site.register(NameFormatCollection,NameFormatCollectionAdmin)

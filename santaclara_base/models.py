@@ -356,6 +356,13 @@ class NameFormatCollection(LabeledAbstract):
     #   {{N|<name_type>}}: <name_type> (lowered and with space => _)
     #   {{I|<name_type>}}: iniziali (Gian Uberto => G. U.)
 
+    def required_name_types(self): 
+        long_name=unicode(self.long_format.pattern)
+        short_name=unicode(self.short_format.pattern)
+        list_name=unicode(self.list_format.pattern)
+        ordering_name=unicode(self.ordering_format.pattern)
+        return long_name+" "+short_name+" "+list_name+" "+ordering_name
+
     def apply_formats(self,names):
         vons=["von","di","da","del","della","dell","dello","dei","degli","delle","de","d",
               "dal","dalla","dall","dallo","dai","dagli","dalle","al","ibn"]
