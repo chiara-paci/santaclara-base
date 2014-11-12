@@ -1,0 +1,12 @@
+{
+    "label": "{{ nameformatcollection.label }}",
+    "name_types": [
+	{% for nt in nameformatcollection.required_name_types %}
+	{
+	    "id": {{ nt.id }},
+	    "label": "{{ nt.label }}"
+	}{% if forloop.last %}{% else %},{% endif %}
+	{% endfor %}
+    ]
+
+}

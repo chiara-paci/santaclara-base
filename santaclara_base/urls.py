@@ -17,7 +17,7 @@ from santaclara_base.decorators import staff_or_404,permission_or_404
 
 urlpatterns = patterns('',
                        ( r'^json/nameformatcollection/(?P<pk>\d+)/required_name_types/?$',
-                         JsonDetailView.as_view(model=NameFormatCollection,
+                         JsonDetailView.as_view(model=NameFormatCollection,context_object_name="nameformatcollection",
                                                 template_name="santaclara_base/nameformatcollection_required_name_types.json")),
                        )
 
