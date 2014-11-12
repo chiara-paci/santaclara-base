@@ -3,9 +3,10 @@ from django.conf import settings
 #from django.views.generic import simple
 from django.views.generic import DeleteView
 
-from santaclara_base.models import Annotation,Tagging,Comment,Version
+from santaclara_base.models import Annotation,Tagging,Comment,Version,NameFormatCollection
 
-from santaclara_base.views import RedirectToContentObjectView,DeleteToContentObjectView,UpdateToContentObjectView,JsonDeleteView,JsonByObjectGenericListView
+from santaclara_base.views import RedirectToContentObjectView,DeleteToContentObjectView,UpdateToContentObjectView
+from santaclara_base.views import JsonDeleteView,JsonByObjectGenericListView,JsonDetailView
 from santaclara_base.views import CreateAnnotationView,JsonCreateAnnotationView,JsonUpdateAnnotationView
 from santaclara_base.views import CreateCommentView,JsonCreateCommentView,JsonUpdateCommentView
 from santaclara_base.views import CreateVersionView,JsonCreateVersionView,JsonUpdateVersionView,JsonDeleteVersionView
@@ -14,7 +15,13 @@ from django.contrib.auth.decorators import permission_required
 
 from santaclara_base.decorators import staff_or_404,permission_or_404
 
-urlpatterns =patterns('',
+urlpatterns = patterns('',
+                       ( r'^json/nameformatcollection/(?P<pk>\d+)/required_name_types/?$',
+                         JsonDetailView.as_view(model=NameFormatCollection,
+                                                template_name="santaclara_base/nameformatcollection_required_name_types.json")),
+                       )
+
+urlpatterns +=patterns('',
                       ( r'^annotations/add/?$',
                         permission_required('santaclara_base.add_annotation')(CreateAnnotationView.as_view())),
                       ( r'^annotations/(?P<pk>\d+)/?$',

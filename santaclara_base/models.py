@@ -371,7 +371,8 @@ class NameFormatCollection(LabeledAbstract):
                 t=t[2:]
             types.append(t)
         types=list(set(types))
-        return types
+        name_types=NameTypes.objects.filter(label__in=types)
+        return name_types
 
     def apply_formats(self,names):
         vons=["von","di","da","del","della","dell","dello","dei","degli","delle","de","d",
