@@ -1,45 +1,45 @@
 (function($) {
 
-/**** TreeView ****/
+    /**** TreeView ****/
 
-/**** Agisce su tabelle.
-
-Ogni riga della tabella che contiene dati deve avere come classe "sc-tree-data". 
-Devono essere definiti:
-- data-level: intero che indica il livello di indentazione;
-- data-has_children: 0=non può avere righe-figlie,1=può avere righe figlie;
-- data-label;
-- se data-has_children=1, data-label_children.
-
-Le righe di primo livello devono avere come data-label esattamente options.first_label.
-Le righe dei livelli successivi devono avere come data-label il data-label_children della riga parent.
-Il data-label_children deve essere formato a partire da data-label aggiungendo un suffisso a piacere.
-Il td da usare come campo di riferimento deve avere data-label=options.title_column.
-
-Ad esempio:
-<table id="tabid">
-<tr class="sc-tree-data" data-level="0" data-has_children="1" data-label="prima" data-label_children="prima-a">
-    <td data-label="rif">Riga A</td><td>altro</td></tr>
-<tr class="sc-tree-data" data-level="1" data-has_children="0" data-label="prima-a">
-    <td data-label="rif">Riga A.1</td><td>altro</td></tr>
-<tr class="sc-tree-data" data-level="1" data-has_children="0" data-label="prima-a">
-    <td data-label="rif">Riga A.2</td><td>altro</td></tr>
-<tr class="sc-tree-data" data-level="0" data-has_children="1" data-label="prima" data-label_children="prima-b">
-    <td data-label="rif">Riga B</td><td>altro</td></tr>
-<tr class="sc-tree-data" data-level="1" data-has_children="0" data-label="prima-b">
-    <td data-label="rif">Riga B.1</td><td>altro</td></tr>
-<tr class="sc-tree-data" data-level="1" data-has_children="1" data-label="prima-b" data-label_children="prima-b-2">
-    <td data-label="rif">Riga B.2</td><td>altro</td></tr>
-<tr class="sc-tree-data" data-level="1" data-has_children="0" data-label="prima-b-2">
-    <td data-label="rif">Riga B.2.1</td><td>altro</td></tr>
-<tr class="sc-tree-data" data-level="1" data-has_children="0" data-label="prima-b-2">
-    <td data-label="rif">Riga B.2.2</td><td>altro</td></tr>
-</table>
-
-$("#tabid").treeview({title_column: "rif",first_label: "prima"});
-
-****/
-
+    /**** Agisce su tabelle.
+	  
+	  Ogni riga della tabella che contiene dati deve avere come classe "sc-tree-data". 
+	  Devono essere definiti:
+	  - data-level: intero che indica il livello di indentazione;
+	  - data-has_children: 0=non può avere righe-figlie,1=può avere righe figlie;
+	  - data-label;
+	  - se data-has_children=1, data-label_children.
+	  
+	  Le righe di primo livello devono avere come data-label esattamente options.first_label.
+	  Le righe dei livelli successivi devono avere come data-label il data-label_children della riga parent.
+	  Il data-label_children deve essere formato a partire da data-label aggiungendo un suffisso a piacere.
+	  Il td da usare come campo di riferimento deve avere data-label=options.title_column.
+	  
+	  Ad esempio:
+	  <table id="tabid">
+	  <tr class="sc-tree-data" data-level="0" data-has_children="1" data-label="prima" data-label_children="prima-a">
+	  <td data-label="rif">Riga A</td><td>altro</td></tr>
+	  <tr class="sc-tree-data" data-level="1" data-has_children="0" data-label="prima-a">
+	  <td data-label="rif">Riga A.1</td><td>altro</td></tr>
+	  <tr class="sc-tree-data" data-level="1" data-has_children="0" data-label="prima-a">
+	  <td data-label="rif">Riga A.2</td><td>altro</td></tr>
+	  <tr class="sc-tree-data" data-level="0" data-has_children="1" data-label="prima" data-label_children="prima-b">
+	  <td data-label="rif">Riga B</td><td>altro</td></tr>
+	  <tr class="sc-tree-data" data-level="1" data-has_children="0" data-label="prima-b">
+	  <td data-label="rif">Riga B.1</td><td>altro</td></tr>
+	  <tr class="sc-tree-data" data-level="1" data-has_children="1" data-label="prima-b" data-label_children="prima-b-2">
+	  <td data-label="rif">Riga B.2</td><td>altro</td></tr>
+	  <tr class="sc-tree-data" data-level="1" data-has_children="0" data-label="prima-b-2">
+	  <td data-label="rif">Riga B.2.1</td><td>altro</td></tr>
+	  <tr class="sc-tree-data" data-level="1" data-has_children="0" data-label="prima-b-2">
+	  <td data-label="rif">Riga B.2.2</td><td>altro</td></tr>
+	  </table>
+	  
+	  $("#tabid").treeview({title_column: "rif",first_label: "prima"});
+	  
+    ****/
+    
     $.widget("sc.sc_treeview", {
 	options: {
 	    title_column: "title",
@@ -59,6 +59,8 @@ $("#tabid").treeview({title_column: "rif",first_label: "prima"});
 	    self.set_logic();
 	},
 	set_logic_on_row: function(row){
+	    var self=this;
+	    var opts=self.options;
 	    var oldhtml=row.html();
 	    var tdtitle=row.children("td[data-label='"+opts.title_column+"']").first();
 	    var indent=0;
@@ -119,7 +121,25 @@ $("#tabid").treeview({title_column: "rif",first_label: "prima"});
 	},
     }); // sc.sc_treeview
 
+
+    /********************************************************************************************************/
+
     /***** sc_hpanel ****/
+    /**** Agisce su div (di principio).
+	  
+	  <div id="example">
+	  <div id="exampleleft"></div>
+	  <div id="exampleright"></div>
+	  </div>
+	  
+	  $("#example").sc_hpanel({
+	  right_name: "exampleright",
+	  left_name: "exampleleft"
+	  });
+	  
+	  Attenzione che il div "left" deve precedere nel DOM il div "right" o si intorta.
+	  
+    ****/
 
     $.widget("sc.sc_hpanel", {
 	options: {
@@ -193,6 +213,8 @@ $("#tabid").treeview({title_column: "rif",first_label: "prima"});
 	    //console.log("left",this.left,this.left.outerHeight(),this.left[0].scrollHeight);
 	    this.right.height(starth);
 	    this.left.height(starth);
+	    this.right.css({ "min-height": starth });
+	    this.left.css({ "min-height": starth });
 	}
 
     }); // sc.sc_hpanel
