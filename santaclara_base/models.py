@@ -371,7 +371,7 @@ class NameFormatCollection(LabeledAbstract):
                 t=t[2:]
             types.append(t)
         types=list(set(types))
-        name_types=NameTypes.objects.filter(label__in=types)
+        name_types=NameType.objects.filter(label__in=types)
         return name_types
 
     def apply_formats(self,names):
