@@ -1,4 +1,5 @@
 {
+    "id": {{ nameformatcollection.id }},
     "label": "{{ nameformatcollection.label }}",
     "name_types": [
 	{% for nt in nameformatcollection.required_name_types %}
