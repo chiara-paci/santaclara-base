@@ -362,8 +362,8 @@ class NameFormatCollection(LabeledAbstract):
         list_name=unicode(self.list_format.pattern)
         ordering_name=unicode(self.ordering_format.pattern)
         F=long_name+" "+short_name+" "+list_name+" "+ordering_name
-        c=re.compile("}}.*?{{")
-        t=c.split(F)
+        c=re.compile("{{.*?}}")
+        t=c.findall(F)
         return unicode(t)+" ("+F+")"
 
     def apply_formats(self,names):
