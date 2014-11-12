@@ -131,7 +131,7 @@ class JsonTimestampCreateView(CreateView):
         response = super(JsonTimestampCreateView, self).form_valid(form)
         self.object = form.save(commit=True)
         return render(self.request,self.template_name_json_response,
-                      {'object': self.object},
+                      {self.context_object_name: self.object},
                       content_type='application/json')
 
     def form_invalid(self, form):
