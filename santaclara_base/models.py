@@ -361,7 +361,10 @@ class NameFormatCollection(LabeledAbstract):
         short_name=unicode(self.short_format.pattern)
         list_name=unicode(self.list_format.pattern)
         ordering_name=unicode(self.ordering_format.pattern)
-        return long_name+" "+short_name+" "+list_name+" "+ordering_name
+        F=long_name+" "+short_name+" "+list_name+" "+ordering_name
+        c=re.compile("^[^{}]*{{|}}.*?{{|}}[{}]*$")
+        t=c.split(F)
+        return unicode(t)+ "("+F+")"
 
     def apply_formats(self,names):
         vons=["von","di","da","del","della","dell","dello","dei","degli","delle","de","d",
