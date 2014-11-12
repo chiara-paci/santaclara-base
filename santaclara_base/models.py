@@ -363,6 +363,7 @@ class NameFormatCollection(LabeledAbstract):
         ordering_name=unicode(self.ordering_format.pattern)
         F=long_name+" "+short_name+" "+list_name+" "+ordering_name
         c=re.compile("}}.*?{{")
+        t=c.split(F)
         return unicode(t)+" ("+F+")"
 
     def apply_formats(self,names):
