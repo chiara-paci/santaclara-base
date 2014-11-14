@@ -1,0 +1,13 @@
+   {
+	{% if user.is_staff %}
+	"admin": "{{ object.get_admin_url }}",
+	{% endif %}
+        "absolute": "{{ object.get_absolute_url }}",
+    	"update": "{{ object.get_update_url }}",
+	"delete": "{{ object.get_delete_url }}",
+	"json": "{{ object.get_json_url }}",
+	"json_update": "{{ object.get_json_update_url }}",
+	"json_short": "{{ object.get_json_short_url }}",
+	"json_full": "{{ object.get_json_full_url }}",
+	"json_delete": "{{ object.get_json_delete_url }}"
+    }

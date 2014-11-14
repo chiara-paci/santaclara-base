@@ -20,27 +20,44 @@ import datetime
 RE_TAG=re.compile(r'\[.*?\]')
 RE_NOTWORD=re.compile(r'[- _(){}\[\]=+:;\'",.?!«»`]+')
 
-class Modifiable(object):
-    def get_subcontext(self):
-        return unicode(self.__class__)+"s"
+class DefaultUrl(object):
+    def get_id(self):
+        return unicode(self.id)
 
+    def get_semantic_id(self):
+        u=santaclara_base.utility.slugify(unicode(self))
+        return "%d-%s" % (self.id,u)
+
+    def url_section(self): return unicode(self.__class__.__name__)
+
+    def app_section(self): return unicode(self._meta.app_label)
+    
     def get_absolute_url(self):
-        return settings.SANTACLARA_BASE_CONTEXT+"/"+self.get_subcontext()+"/%d" % self.id
+        return u"/%s/%s/%s" % (self.app_section(),self.url_section(),self.get_semantic_id()) 
 
     def get_json_url(self):
-        return settings.SANTACLARA_BASE_CONTEXT+"/json/"+self.get_subcontext()+"/%d" % self.id
+        return u"/%s/json/%s/%d" % (self.app_section(),self.url_section(),self.get_id()) 
 
     def get_update_url(self):
         return self.get_absolute_url()+"/update"
 
     def get_delete_url(self):
         return self.get_absolute_url()+"/delete"
+        
+    def get_json_short_url(self):
+        return self.get_json_url()+"/short"
+
+    def get_json_full_url(self):
+        return self.get_json_url()+"/full"
 
     def get_json_update_url(self):
         return self.get_json_url()+"/update"
 
     def get_json_delete_url(self):
         return self.get_json_url()+"/delete"
+        
+    def get_admin_url(self):
+        return u"/admin/%s/json/%s/%d" % (self.app_section(),self.url_section(),self.get_id()) 
 
 class PositionAbstract(models.Model): 
     pos = models.PositiveIntegerField()
@@ -69,7 +86,7 @@ class VersionManager(models.Manager):
     def order_by_last_modified(self):
         return self.order_by('last_modified')
 
-class Version(TimestampAbstract,Modifiable):
+class Version(TimestampAbstract,DefaultUrl):
     valid = models.BooleanField(default=True)
     text = models.TextField()
     label = models.CharField(max_length="128",default=lambda: datetime.datetime.now().strftime("%Y%m%d.%H%M%S.%f"))
@@ -113,7 +130,7 @@ class Location(models.Model):
 annotator.register(Location,AllowForStaffAnnotator)
 taggator.register(Location,AllowForStaffTaggator)
 
-class Annotation(TimestampAbstract,Modifiable):
+class Annotation(TimestampAbstract,DefaultUrl):
     text = models.TextField()
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
@@ -130,11 +147,11 @@ class Tag(models.Model):
     def __unicode__(self): return self.label
 
     def get_absolute_url(self):
-        return settings.SANTACLARA_BASE_CONTEXT+"/tags/%d-%s/" % (self.id,santaclara_base.utility.slugify(self.label))
+        return settings.SANTACLARA_BASE_CONTEXT+"/tag/%d-%s/" % (self.id,santaclara_base.utility.slugify(self.label))
 
 annotator.register(Tag,AllowForStaffAnnotator)
 
-class Tagging(TimestampAbstract,Modifiable):
+class Tagging(TimestampAbstract,DefaultUrl):
     label = models.ForeignKey(Tag)
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
@@ -173,7 +190,7 @@ class CommentManager(models.Manager):
     def all_by_object(self,content_type_id,object_id):
         return self.all().filter(content_type__id=content_type_id,object_id=object_id)
 
-class Comment(TimestampAbstract,LocatedAbstract,Modifiable):
+class Comment(TimestampAbstract,LocatedAbstract,DefaultUrl):
     text = models.TextField()
     is_public = models.BooleanField(default=True)
     is_removed = models.BooleanField(default=False)
