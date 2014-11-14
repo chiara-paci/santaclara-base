@@ -28,9 +28,11 @@ class DefaultUrl(object):
         u=santaclara_base.utility.slugify(unicode(self))
         return "%d-%s" % (self.id,u)
 
-    def url_section(self): return unicode(self.__class__.__name__)
+    def url_section(self): 
+        return unicode(self.__class__.__name__).lower()
 
-    def app_section(self): return unicode(self._meta.app_label)
+    def app_section(self): 
+        return unicode(self._meta.app_label)
     
     def get_absolute_url(self):
         return u"/%s/%s/%s" % (self.app_section(),self.url_section(),self.get_semantic_id()) 
