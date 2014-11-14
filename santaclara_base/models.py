@@ -38,7 +38,7 @@ class DefaultUrl(object):
         return u"/%s/%s/%s" % (self.app_section(),self.url_section(),self.get_semantic_id()) 
 
     def get_json_url(self):
-        return u"/%s/json/%s/%d" % (self.app_section(),self.url_section(),self.get_id()) 
+        return u"/%s/json/%s/%s" % (self.app_section(),self.url_section(),self.get_id()) 
 
     def get_update_url(self):
         return self.get_absolute_url()+"/update"
@@ -59,7 +59,7 @@ class DefaultUrl(object):
         return self.get_json_url()+"/delete"
         
     def get_admin_url(self):
-        return u"/admin/%s/%s/%d" % (self.app_section(),self.url_section(),self.get_id()) 
+        return u"/admin/%s/%s/%s" % (self.app_section(),self.url_section(),self.get_id()) 
 
 class PositionAbstract(models.Model): 
     pos = models.PositiveIntegerField()

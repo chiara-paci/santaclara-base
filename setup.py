@@ -8,7 +8,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='santaclara_base',
-    version='0.2.4.4',
+    version='0.2.4.5',
     packages=['santaclara_base'],
     package_data={'santaclara_base': [
             "management/__init__.py",
