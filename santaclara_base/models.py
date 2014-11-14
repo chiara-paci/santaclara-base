@@ -57,7 +57,7 @@ class DefaultUrl(object):
         return self.get_json_url()+"/delete"
         
     def get_admin_url(self):
-        return u"/admin/%s/json/%s/%d" % (self.app_section(),self.url_section(),self.get_id()) 
+        return u"/admin/%s/%s/%d" % (self.app_section(),self.url_section(),self.get_id()) 
 
 class PositionAbstract(models.Model): 
     pos = models.PositiveIntegerField()
