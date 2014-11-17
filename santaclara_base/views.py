@@ -92,6 +92,15 @@ class JsonDetailView(DetailView):
         ret=map(lambda x: x.replace(".html",".json"),L)
         return(ret)
 
+class JsonListView(ListView): 
+    def render_to_response(self, context, **kwargs):
+        return super(JsonListView, self).render_to_response(context,content_type='application/json; charset=utf8', **kwargs)
+
+    def get_template_names(self):
+        L=super(JsonListView, self).get_template_names()
+        ret=map(lambda x: x.replace(".html",".json"),L)
+        return(ret)
+
 class JsonDeleteView(DeleteView):
     success_url="/"
 
