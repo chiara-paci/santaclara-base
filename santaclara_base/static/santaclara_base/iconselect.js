@@ -35,7 +35,7 @@ $(document).ready(function(){
 		    console.log(json);
 		    for(i=0;i<json.length;i++){
 			iconfamily=json[i];
-			html+='<li class="familyname">'+iconfamily["name"]+'</li><br/>\n';
+			html+='<li class="familyname">'+iconfamily["name"]+'</li>\n';
 			for(j=0;j<iconfamily["icon_set"].length;j++){
 			    icon=iconfamily["icon_set"][j];
 			    icon_html=$('<div/>').html(icon["html"]).text();
