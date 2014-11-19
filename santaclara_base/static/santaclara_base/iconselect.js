@@ -11,7 +11,7 @@ $(document).ready(function(){
 	$("#"+target_view).html(text);
 
 	$("ul.santaclaraiconselectul li.selected").removeClass("selected");
-	$(this).addClass("selected");
+	$(this).parent().addClass("selected");
 	
     });
 
