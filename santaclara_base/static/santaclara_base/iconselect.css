@@ -5,8 +5,6 @@ ul.santaclaraiconselectul {
     margin: 0 !important;
     position: absolute;
     z-index: 100;
-    width: 5em;
-    heigth: 5em;
     margin-top: .2em;
     background: #fff;
     border: 1px solid #666;
@@ -20,7 +18,7 @@ ul.santaclaraiconselectul {
 }
 
 ul.santaclaraiconselectul li {
-    display: inline-block;
+    display: block;
     padding: .2em !important;
     margin: .2em !important;
     border: 1px solid #ccc !important;
