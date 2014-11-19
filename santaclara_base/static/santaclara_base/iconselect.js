@@ -12,7 +12,7 @@ $(document).ready(function(){
 
 	$("ul.santaclaraiconselectul li.selected").removeClass("selected");
 	$(this).parent().addClass("selected");
-	
+	$(this).parent().parent().hide();
     });
 
     $(".santaclaraiconselectothers").click(function(event){
