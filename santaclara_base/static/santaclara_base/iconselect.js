@@ -15,6 +15,13 @@ $(document).ready(function(){
 	
     });
 
+    $(".santaclaraiconselectview").click(function(event){
+	var optionsarea_id=$(this).data("optionsarea_id");
+	$("#"+optionsarea_id).toggle();
+    });
+
+    $("ul.santaclaraiconselectul").hide();
+
 /*    $(".taginput").each(function(index){
 	var open_tl=$(this).find("a.taglistopen").first();
 	var close_tl=$(this).find("a.taglistclose").first();
