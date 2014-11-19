@@ -32,7 +32,7 @@ ul.santaclaraiconselectul li {
 ul.santaclaraiconselectul li.familyname {
     border: none !important;
     font-weight: bold;
-    clear:both;
+    clear: both !important;
 }
 
 ul.santaclaraiconselectul li.selected {
