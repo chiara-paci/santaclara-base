@@ -63,7 +63,7 @@ class IconSelect(forms.Select):
                 selected=SafeUnicode(v)
                 optionsarea+=u' class="selected"'
             optionsarea+='><a href="" data-value="'+unicode(k)+'" data-target="'+field_id+'_view">'+SafeUnicode(v)+'</a></li>\n'
-        optionsarea+="</ul>"
+        optionsarea+="</ul>\n&nbsp;"
 
         U=u'<a href="" id="'+field_id+'_view" class="santaclaraiconselect"'
         U+=u' data-input_id="'+field_id+'" data-optionsarea_id="'+field_id+'_optionsarea">'
