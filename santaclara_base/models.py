@@ -456,12 +456,14 @@ class NameFormatCollection(LabeledAbstract):
 
         return long_name,short_name,list_name,ordering_name
 
-class Icon(models.Model):
-    html = models.CharField(max_length=2048)
-
-    def __unicode__(self): return SafeUnicode(self.html)
-
 class IconFamily(models.Model):
     name = models.CharField(max_length=2048)
 
     def __unicode__(self): return self.name
+
+class Icon(models.Model):
+    family = models.ForeignKey(IconFamily)
+    html = models.CharField(max_length=2048)
+
+    def __unicode__(self): return SafeUnicode(self.html)
+
