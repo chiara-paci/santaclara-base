@@ -46,7 +46,7 @@ $(document).ready(function(){
 			    html+='><a class="santaclaraiconselect" href=""'
 			    html+=' data-value="'+icon["id"]+'"'
 			    html+=' data-target_view="'+target_view+'"'
-			    html+=' data-target_input="'+targt_input+'"'
+			    html+=' data-target_input="'+target_input+'"'
 			    html+='>'+icon_html+'</a></li>\n';
 			}			
 		    }
