@@ -10,7 +10,8 @@ ul.santaclaraiconselectul {
 ul.santaclaraiconselectul li {
     display: inline;
     padding: .2em;
-    margin: 0;
+    margin: .2em;
+    border: 1px solid #eee !important;
 }
 
 ul.santaclaraiconselectul li.selected {
