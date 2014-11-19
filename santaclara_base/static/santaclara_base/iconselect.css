@@ -9,7 +9,7 @@ ul.santaclaraiconselectul {
     background: #fff;
     border: 1px solid #666;
     display: block;
-    width: 5em;
+    max-width: 15em;
 }
 
 .santaclaraiconselectview {
