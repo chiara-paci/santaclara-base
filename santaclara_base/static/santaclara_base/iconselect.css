@@ -10,6 +10,7 @@ ul.santaclaraiconselectul {
     margin-top: .2em;
     background: #fff;
     border: 1px solid #666;
+    display: block;
 }
 
 .santaclaraiconselectview {
@@ -19,7 +20,7 @@ ul.santaclaraiconselectul {
 }
 
 ul.santaclaraiconselectul li {
-    display: inline;
+    display: inline-block;
     padding: .2em !important;
     margin: .2em !important;
     border: 1px solid #ccc !important;
