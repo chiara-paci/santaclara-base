@@ -1,6 +1,7 @@
 from django import forms
 from django.utils.safestring import mark_safe
 from santaclara_base.models import Tag
+from django.utils.safestring import SafeUnicode
 
 class SantaClaraWidget(forms.Textarea):
     class Media:
