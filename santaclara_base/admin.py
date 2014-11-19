@@ -4,7 +4,7 @@ from django import forms
 from django.utils.html import format_html
 
 from santaclara_base.models import Version,Annotation,Tag,Tagging,Comment
-from santaclara_base.models import NameFormat,NameType,NameFormatCollection,Icon
+from santaclara_base.models import NameFormat,NameType,NameFormatCollection,Icon,IconFamily
 from santaclara_base.forms  import VersionAdminForm, WithIconForm
 
 class CommentInline(generic.GenericStackedInline):
