@@ -54,7 +54,7 @@ class IconSelect(forms.Select):
             if not k: continue
             if unicode(k)==unicode(value):
                 selected=u"selected: "+SafeUnicode(v)
-            output.append(u'<li data-value="k"><a href="" data-value="'+k+'" data-text="'+SafeUnicode(v)+'">'+SafeUnicode(v)+'</a></li>')
+            output.append(u'<li data-value="k"><a href="" data-value="'+unicode(k)+'" data-text="'+SafeUnicode(v)+'">'+SafeUnicode(v)+'</a></li>')
         output.append("</ul>")
 
         U=u'<a href="" class="iconselect">'+selected+'</a>\n'
