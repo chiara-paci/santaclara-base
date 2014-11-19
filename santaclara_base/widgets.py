@@ -41,8 +41,12 @@ class TagWidget(forms.TextInput):
 
 class IconSelect(forms.Select): 
     class Media:
+        css = {
+            'all': (              
+                'santaclara_base/iconselect.css',
+                )
+            }
         js = ('js/jquery.js',
-              'santaclara_base/iconselect.css',
               'santaclara_base/iconselect.js')
 
     def render(self, name, value, attrs=None, choices=()):
