@@ -10,7 +10,7 @@ ul.santaclaraiconselectul {
     border: 1px solid #666;
     display: block;
     max-width: 15em;
-    max-heigth: 15em;
+    max-height: 15em;
     overflow-x: hidden;
     overflow-y: scroll;
 }
