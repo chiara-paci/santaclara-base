@@ -1,9 +1,10 @@
 from django.contrib import admin
 from django.contrib.contenttypes import generic
 from django import forms
+from django.utils.html import format_html
 
 from santaclara_base.models import Version,Annotation,Tag,Tagging,Comment
-from santaclara_base.models import NameFormat,NameType,NameFormatCollection
+from santaclara_base.models import NameFormat,NameType,NameFormatCollection,Icon
 from santaclara_base.forms  import VersionAdminForm
 
 class CommentInline(generic.GenericStackedInline):
@@ -86,3 +87,18 @@ class NameFormatCollectionAdmin(admin.ModelAdmin):
     list_editable = ['long_format','short_format','list_format','ordering_format']
 
 admin.site.register(NameFormatCollection,NameFormatCollectionAdmin)
+
+class IconAdmin(admin.ModelAdmin):
+    list_display=[ "html_render","html" ]
+    list_editable=[ "html" ]
+
+    class Media:
+        css = {
+            "all": ("css/font-awesome.min.css",)
+            }
+    
+    def html_render(self,obj):
+        return format_html(obj.html)
+    html_render.allow_tags = True
+
+admin.site.register(Icon,IconAdmin)

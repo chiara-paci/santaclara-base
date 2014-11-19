@@ -4,6 +4,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
+from django.utils.html import format_html
 
 from santaclara_base.annotability import annotator,DisableAnnotationAnnotator,AllowForOwnerAnnotator,AllowForStaffAnnotator
 from santaclara_base.taggability import taggator,DisableTagTaggator,AllowForOwnerTaggator,AllowForStaffTaggator
@@ -453,3 +454,9 @@ class NameFormatCollection(LabeledAbstract):
                 ordering_name=ordering_name.replace("{{"+k+"|"+key+"}}",val_f[k])
 
         return long_name,short_name,list_name,ordering_name
+
+class Icon(models.Model):
+    html = models.CharField(max_length=2048)
+
+    def __unicode__(self): return self.html
+
