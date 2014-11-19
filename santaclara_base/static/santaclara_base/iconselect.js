@@ -28,7 +28,7 @@ $(document).ready(function(){
 	var current_val=$("#"+target_input).val();
 
 	if ( $("#"+optionsarea_id).data("filled")=="no" ) {
-	    var url="/santaclara-base/json/iconfamily/";
+	    var url="/santaclara_base/json/iconfamily/";
 	    $.getJSON( url )
 		.done(function(json){
 		    var html,i,j,iconfamily,icon,icon_html;
