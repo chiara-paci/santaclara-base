@@ -42,25 +42,31 @@ class TagWidget(forms.TextInput):
 class IconSelect(forms.Select): 
     class Media:
         js = ('js/jquery.js',
+              'santaclara_base/iconselect.css',
               'santaclara_base/iconselect.js')
 
     def render(self, name, value, attrs=None, choices=()):
-        ta_id=attrs["id"]
+        field_id=attrs["id"]
+        field_name=attrs["name"]
 
-        output=[]
-        output.append("<ul>")
+        hidden=u'<input id="'+field_id+'" name="'+field_name+'" type="hidden" value="" />'
+
         selected=u'none selected'
+        optionsarea=u'<ul id="'+field_id+'_optionsarea">\n'
         for k,v in self.choices:
             if not k: continue
+            optionsarea+=u'<li data-value="k"'
             if unicode(k)==unicode(value):
                 selected=u"selected: "+SafeUnicode(v)
-            output.append(u'<li data-value="k"><a href="" data-value="'+unicode(k)+'" data-text="'+SafeUnicode(v)+'">'+SafeUnicode(v)+'</a></li>')
-        output.append("</ul>")
+                optionsarea+=u' class="selected"'
+            optionsarea+='><a href="" data-value="'+unicode(k)+'" data-text="'+SafeUnicode(v)+'">'+SafeUnicode(v)+'</a></li>\n'
+        optionsarea+="</ul>"
 
-        U=u'<a href="" class="iconselect">'+selected+'</a>\n'
+        U=u'<a href="" class="santaclaraiconselect" data-input_id="'+field_id+'" data-optionsarea_id="'+field_id+'_optionsarea">'
+        U+=selected+'</a>\n'
         U+=ta_id
-        U+=u'\n'.join(output)
-
+        U+=optionsarea
+        U+=hidden
         return U
 
 
