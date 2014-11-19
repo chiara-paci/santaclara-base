@@ -6,6 +6,7 @@ $(document).ready(function(){
 	var target_view=$(this).data("target_view");
 	var target_input=$(this).data("target_input");
 	var text=$(this).html();
+	text+=' <i class="fa fa-caret-down"></i>';
 
 	$("#"+target_input).val(value);
 	$("#"+target_view).html(text);
