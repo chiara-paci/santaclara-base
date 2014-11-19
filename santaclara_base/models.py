@@ -461,3 +461,7 @@ class Icon(models.Model):
 
     def __unicode__(self): return SafeUnicode(self.html)
 
+class IconFamily(models.Model):
+    name = models.CharField(max_length=2048)
+
+    def __unicode__(self): return self.name

@@ -116,3 +116,5 @@ class WithIconAdmin(admin.ModelAdmin):
 
     def get_changelist_form(self, request, **kwargs):
         return WithIconForm
+
+admin.site.register(IconFamily)
