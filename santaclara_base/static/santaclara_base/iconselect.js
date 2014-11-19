@@ -32,7 +32,7 @@ $(document).ready(function(){
 	    $.getJSON( url )
 		.done(function(json){
 		    var html,i,j,iconfamily,icon,icon_html;
-		    
+		    console.log(json);
 		    for(i=0;i<json.length;i++){
 			iconfamily=json[i];
 			html+='<li class="familyname">'+iconfamily["name"]+'</li>\n';
