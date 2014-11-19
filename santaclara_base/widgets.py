@@ -22,7 +22,7 @@ class SantaClaraWidget(forms.Textarea):
 class TagWidget(forms.TextInput):
     class Media:
         js = ('js/jquery.js',
-              'localjs/tag-widget.js')
+              'santaclara_base/tag-widget.js')
 
     def render(self, name, value, attrs=None):
         def render_tag(tag):
@@ -40,6 +40,10 @@ class TagWidget(forms.TextInput):
         return mark_safe(S)
 
 class IconSelect(forms.Select): 
+    class Media:
+        js = ('js/jquery.js',
+              'santaclara_base/iconselect.js')
+
     def render(self, name, value, attrs=None, choices=()):
         output=[]
         output.append("<ul>")
