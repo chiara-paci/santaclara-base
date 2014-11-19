@@ -47,9 +47,8 @@ class IconSelect(forms.Select):
 
     def render(self, name, value, attrs=None, choices=()):
         field_id=attrs["id"]
-        field_name=attrs["name"]
 
-        hidden=u'<input id="'+field_id+'" name="'+field_name+'" type="hidden" value="" />'
+        hidden=u'<input id="'+field_id+'" name="'+name+'" type="hidden" value="" />'
 
         selected=u'none selected'
         optionsarea=u'<ul id="'+field_id+'_optionsarea">\n'
@@ -64,7 +63,7 @@ class IconSelect(forms.Select):
 
         U=u'<a href="" class="santaclaraiconselect" data-input_id="'+field_id+'" data-optionsarea_id="'+field_id+'_optionsarea">'
         U+=selected+'</a>\n'
-        U+=ta_id
+        U+=name
         U+=optionsarea
         U+=hidden
         return U
