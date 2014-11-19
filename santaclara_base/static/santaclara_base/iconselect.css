@@ -6,6 +6,7 @@ ul.santaclaraiconselectul {
     position: absolute;
     z-index: 100;
     margin-top: .2em;
+    width: 5em;
     background: #fff;
     border: 1px solid #666;
     display: block;
