@@ -45,6 +45,8 @@ class IconSelect(forms.Select):
               'santaclara_base/iconselect.js')
 
     def render(self, name, value, attrs=None, choices=()):
+        ta_id=attrs["id"]
+
         output=[]
         output.append("<ul>")
         selected=u'none selected'
@@ -52,10 +54,11 @@ class IconSelect(forms.Select):
             if not k: continue
             if unicode(k)==unicode(value):
                 selected=u"selected: "+SafeUnicode(v)
-            output.append(u'<li data-value="k">'+SafeUnicode(v)+'</li>')
+            output.append(u'<li data-value="k"><a href="" data-value="'+k+'" data-text="'+SafeUnicode(v)+'">'+SafeUnicode(v)+'</a></li>')
         output.append("</ul>")
 
         U=u'<a href="" class="iconselect">'+selected+'</a>\n'
+        U+=ta_id
         U+=u'\n'.join(output)
 
         return U
