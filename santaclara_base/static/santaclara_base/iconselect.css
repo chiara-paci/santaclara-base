@@ -1,0 +1,11 @@
+.santaclaraiconselectul {
+    list-style: none;
+    text-align: left;
+    padding: 0;
+    margin: 0;
+    border: 1px solid black;
+}
+
+.santaclaraiconselectul li {
+    display: inline;
+}

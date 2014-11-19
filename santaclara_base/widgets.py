@@ -51,7 +51,7 @@ class IconSelect(forms.Select):
         hidden=u'<input id="'+field_id+'" name="'+name+'" type="hidden" value="" />'
 
         selected=u'none selected'
-        optionsarea=u'<ul id="'+field_id+'_optionsarea">\n'
+        optionsarea=u'<ul id="'+field_id+'_optionsarea" class="santaclaraiconselectul">\n'
         for k,v in self.choices:
             if not k: continue
             optionsarea+=u'<li data-value="k"'
