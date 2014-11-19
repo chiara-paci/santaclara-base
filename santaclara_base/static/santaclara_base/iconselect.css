@@ -3,7 +3,9 @@ ul.santaclaraiconselectul {
     text-align: left;
     padding: .2em !important;
     margin: 0 !important;
-    display: inline;
+    position: absolute;
+    z-index: 100;
+    width: 5em;
 }
 
 .santaclaraiconselectview {
