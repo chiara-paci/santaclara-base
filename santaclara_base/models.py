@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.utils.html import format_html
+from django.utils.safestring import SafeUnicode
 
 from santaclara_base.annotability import annotator,DisableAnnotationAnnotator,AllowForOwnerAnnotator,AllowForStaffAnnotator
 from santaclara_base.taggability import taggator,DisableTagTaggator,AllowForOwnerTaggator,AllowForStaffTaggator
@@ -458,5 +459,5 @@ class NameFormatCollection(LabeledAbstract):
 class Icon(models.Model):
     html = models.CharField(max_length=2048)
 
-    def __unicode__(self): return self.html
+    def __unicode__(self): return SafeUnicode(self.html)
 
