@@ -47,14 +47,18 @@ class IconSelect(forms.Select):
     def render(self, name, value, attrs=None, choices=()):
         output=[]
         output.append("<ul>")
-        selected=u"none selected"
+        selected=u'none selected'
         for k,v in self.choices:
             if not k: continue
             if unicode(k)==unicode(value):
                 selected=u"selected: "+SafeUnicode(v)
             output.append(u'<li data-value="k">'+SafeUnicode(v)+'</li>')
         output.append("</ul>")
-        return selected+'\n'+u'\n'.join(output)
+
+        U=u'<a href="" class="iconselect">'+selected+'</a>\n'
+        U+=u'\n'.join(output)
+
+        return U
 
 
         
