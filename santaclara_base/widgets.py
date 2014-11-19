@@ -1,7 +1,9 @@
 from django import forms
 from django.utils.safestring import mark_safe
-from santaclara_base.models import Tag
 from django.utils.safestring import SafeUnicode
+
+from santaclara_base.models import Tag,Icon
+
 
 class SantaClaraWidget(forms.Textarea):
     class Media:
@@ -39,7 +41,8 @@ class TagWidget(forms.TextInput):
         S='<div class="taginput">'+S+html+'</div>'
         return mark_safe(S)
 
-class IconSelect(forms.Select): 
+#class IconSelect(forms.Select): 
+class IconSelect(forms.HiddenInput): 
     class Media:
         css = {
             'all': (              
@@ -49,25 +52,31 @@ class IconSelect(forms.Select):
         js = ('js/jquery.js',
               'santaclara_base/iconselect.js')
 
-    def render(self, name, value, attrs=None, choices=()):
+    def render(self, name, value, attrs=None):
         field_id=attrs["id"]
 
-        selected=u'none selected'
-        k_selected=u''
+        if value == None:
+            selected=u'none selected'
+        else:
+            k=int(value)
+            icon=Icon.objects.get(id=k)
+            selected=SafeUnicode(icon.html)
+        k_selected=unicode(value)
+
         optionsarea=u'<ul id="'+field_id+'_optionsarea" class="santaclaraiconselectul">\n'
-        for k,v in self.choices:
-            if not k: continue
-            optionsarea+=u'<li data-value="k"'
-            if unicode(k)==unicode(value):
-                selected=SafeUnicode(v)
-                k_selected=unicode(k)
-                optionsarea+=u' class="selected"'
-            optionsarea+='><a class="santaclaraiconselect" href=""'
-            optionsarea+=' data-value="'+unicode(k)+'"'
-            optionsarea+=' data-target_view="'+field_id+'_view"'
-            optionsarea+=' data-target_input="'+field_id+'"'
-            optionsarea+='>'
-            optionsarea+=SafeUnicode(v)+'</a></li>\n'
+        # for k,v in self.choices:
+        #     if not k: continue
+        #     optionsarea+=u'<li data-value="k"'
+        #     if unicode(k)==unicode(value):
+        #         selected=SafeUnicode(v)
+        #         k_selected=unicode(k)
+        #         optionsarea+=u' class="selected"'
+        #     optionsarea+='><a class="santaclaraiconselect" href=""'
+        #     optionsarea+=' data-value="'+unicode(k)+'"'
+        #     optionsarea+=' data-target_view="'+field_id+'_view"'
+        #     optionsarea+=' data-target_input="'+field_id+'"'
+        #     optionsarea+='>'
+        #     optionsarea+=SafeUnicode(v)+'</a></li>\n'
         optionsarea+="</ul>"
 
         hidden=u'<input id="'+field_id+'" name="'+name+'" type="hidden" value="'+k_selected+'" />'
