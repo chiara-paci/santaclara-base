@@ -31,7 +31,7 @@ $(document).ready(function(){
 	    var url="/santaclara_base/json/iconfamily/";
 	    $.getJSON( url )
 		.done(function(json){
-		    var html,i,j,iconfamily,icon,icon_html;
+		    var html='',i,j,iconfamily,icon,icon_html;
 		    console.log(json);
 		    for(i=0;i<json.length;i++){
 			iconfamily=json[i];
@@ -50,6 +50,7 @@ $(document).ready(function(){
 			    html+='>'+icon_html+'</a></li>\n';
 			}			
 		    }
+		    $("#"+optionsarea_id).html(html);
 
 		    $(".santaclaraiconselect").click(function(event){
 			event.preventDefault();
@@ -57,6 +58,7 @@ $(document).ready(function(){
 		    });
 		    
 		    $("#"+optionsarea_id).data("filled","yes");
+
 		})
 		.fail(function(jqxhr,textStatus,error){
 		    var err = textStatus + ", " + error;
