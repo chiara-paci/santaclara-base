@@ -38,7 +38,7 @@ $(document).ready(function(){
 			html+='<li class="familyname">'+iconfamily["name"]+'</li>\n';
 			for(j=0;j<iconfamily["icon_set"].length;j++){
 			    icon=iconfamily["icon_set"][j];
-			    icon_html=$('<div/>').text(icon["html"]).html();
+			    icon_html=$('<div/>').html(icon["html"]).text();
 			    html+='<li data-value="'+icon["id"]+'"';
 			    if (parseInt(icon["id"])==parseInt(current_val))
 				html+=' class="selected"';
