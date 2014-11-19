@@ -5,7 +5,7 @@ from django.utils.html import format_html
 
 from santaclara_base.models import Version,Annotation,Tag,Tagging,Comment
 from santaclara_base.models import NameFormat,NameType,NameFormatCollection,Icon
-from santaclara_base.forms  import VersionAdminForm
+from santaclara_base.forms  import VersionAdminForm, WithIconForm
 
 class CommentInline(generic.GenericStackedInline):
     model = Comment
@@ -102,3 +102,14 @@ class IconAdmin(admin.ModelAdmin):
     html_render.allow_tags = True
 
 admin.site.register(Icon,IconAdmin)
+
+class WithIconAdmin(admin.ModelAdmin):
+    form = WithIconForm
+    class Media:
+        css = {
+            "all": ("css/font-awesome.min.css",)
+            }
+
+    def html_icon_render(self,obj):
+        return format_html(obj.icon.html)
+    html_icon_render.allow_tags = True

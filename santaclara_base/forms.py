@@ -1,5 +1,5 @@
 from django import forms
-from santaclara_base.widgets import TagWidget
+from santaclara_base.widgets import TagWidget,IconSelect
 from santaclara_editor.widgets import SantaClaraSimpleWidget,SantaClaraJQueryUIWidget
 from santaclara_base.models import Annotation,Tagging,Comment,Version
 
@@ -56,3 +56,8 @@ class VersionAdminForm(forms.ModelForm):
             "text": SantaClaraJQueryUIWidget(attrs={"style":"adminstyle"})
             }
 
+class WithIconForm(forms.ModelForm):
+    class Meta:
+        widgets = {
+            "icon": IconSelect
+            }
