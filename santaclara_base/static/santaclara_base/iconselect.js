@@ -15,7 +15,7 @@ $(document).ready(function(){
 	$(this).parent().parent().hide();
     });
 
-    $(".santaclaraiconselectothers").click(function(event){
+    $(".santaclaraiconselectview").click(function(event){
 	event.preventDefault();
 	var optionsarea_id=$(this).data("optionsarea_id");
 	$("#"+optionsarea_id).toggle();
