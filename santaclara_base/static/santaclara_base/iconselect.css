@@ -1,16 +1,17 @@
 ul.santaclaraiconselectul {
     list-style: none;
     text-align: left;
-    padding: .2em;
+    padding: .2em !important;
     margin: 0;
     border: 1px solid black !important;
     display: inline;
+    line-height: 1.2em;
 }
 
 ul.santaclaraiconselectul li {
     display: inline;
-    padding: .2em;
-    margin: .2em;
+    padding: .2em !important;
+    margin: .2em !important;
     border: 1px solid #eee !important;
 }
 
