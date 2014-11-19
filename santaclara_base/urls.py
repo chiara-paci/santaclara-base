@@ -3,7 +3,7 @@ from django.conf import settings
 #from django.views.generic import simple
 from django.views.generic import DeleteView
 
-from santaclara_base.models import Annotation,Tagging,Comment,Version,NameFormatCollection
+from santaclara_base.models import Annotation,Tagging,Comment,Version,NameFormatCollection,IconFamily
 
 from santaclara_base.views import RedirectToContentObjectView,DeleteToContentObjectView,UpdateToContentObjectView
 from santaclara_base.views import JsonDeleteView,JsonByObjectGenericListView,JsonDetailView,JsonListView
