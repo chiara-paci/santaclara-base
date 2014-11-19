@@ -72,7 +72,7 @@ class IconSelect(forms.Select):
 
         hidden=u'<input id="'+field_id+'" name="'+name+'" type="hidden" value="'+k_selected+'" />'
 
-        U=u'<span id="'+field_id+'_view"  class="santaclaraiconselectview"'>'+selected+'</span>\n'
+        U=u'<span id="'+field_id+'_view"  class="santaclaraiconselectview">'+selected+'</span>\n'
         U+=u'<a href="" class="santaclaraiconselectothers"'
         U+=u' data-input_id="'+field_id+'" data-optionsarea_id="'+field_id+'_optionsarea">'
         U+=u' &nbsp;others:</a>'
