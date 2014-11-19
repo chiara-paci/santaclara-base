@@ -6,6 +6,12 @@ ul.santaclaraiconselectul {
     display: inline;
 }
 
+.santaclaraiconselectview {
+    padding: .4em !important;
+    margin: .2em !important;
+    border: 1px solid #eee !important;
+}
+
 ul.santaclaraiconselectul li {
     display: inline;
     padding: .2em !important;
