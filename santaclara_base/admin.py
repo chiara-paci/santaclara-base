@@ -113,3 +113,6 @@ class WithIconAdmin(admin.ModelAdmin):
     def html_icon_render(self,obj):
         return format_html(obj.icon.html)
     html_icon_render.allow_tags = True
+
+    def get_changelist_form(self, request, **kwargs):
+        return WithIconForm
