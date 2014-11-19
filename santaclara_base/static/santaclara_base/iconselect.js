@@ -1,5 +1,20 @@
 $(document).ready(function(){
 
+    $(".santaclaraiconselect").click(function(event){
+	event.preventDefault();
+	var value=$(this).data("value");
+	var target_view=$(this).data("target_view");
+	var target_input=$(this).data("target_input");
+	var text=$(this).html();
+
+	$("#"+target_input).val(value);
+	$("#"+target_view).html(text);
+
+	$("ul.santaclaraiconselectul li.selected").removeClass("selected");
+	$(this).addClass("selected");
+	
+    });
+
 /*    $(".taginput").each(function(index){
 	var open_tl=$(this).find("a.taglistopen").first();
 	var close_tl=$(this).find("a.taglistclose").first();

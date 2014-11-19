@@ -52,18 +52,25 @@ class IconSelect(forms.Select):
     def render(self, name, value, attrs=None, choices=()):
         field_id=attrs["id"]
 
-        hidden=u'<input id="'+field_id+'" name="'+name+'" type="hidden" value="" />'
-
         selected=u'none selected'
+        k_selected=u''
         optionsarea=u'<ul id="'+field_id+'_optionsarea" class="santaclaraiconselectul">\n'
         for k,v in self.choices:
             if not k: continue
             optionsarea+=u'<li data-value="k"'
             if unicode(k)==unicode(value):
                 selected=SafeUnicode(v)
+                k_selected=unicode(k)
                 optionsarea+=u' class="selected"'
-            optionsarea+='><a href="" data-value="'+unicode(k)+'" data-target="'+field_id+'_view">'+SafeUnicode(v)+'</a></li>\n'
+            optionsarea+='><a class="santaclaraiconselect" href=""'
+            optionsarea+=' data-value="'+unicode(k)+'"'
+            optionsarea+=' data-target_view="'+field_id+'_view"'
+            optionsarea+=' data-target_input="'+field_id+'"'
+            optionsarea+='>'
+            optionsarea+=SafeUnicode(v)+'</a></li>\n'
         optionsarea+="</ul>\n&nbsp;"
+
+        hidden=u'<input id="'+field_id+'" name="'+name+'" type="hidden" value="'+k_selected+'" />'
 
         U=u'<a href="" id="'+field_id+'_view" class="santaclaraiconselect"'
         U+=u' data-input_id="'+field_id+'" data-optionsarea_id="'+field_id+'_optionsarea">'
