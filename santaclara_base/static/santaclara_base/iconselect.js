@@ -1,24 +1,71 @@
 $(document).ready(function(){
 
-    $(".santaclaraiconselect").click(function(event){
-	event.preventDefault();
-	var value=$(this).data("value");
-	var target_view=$(this).data("target_view");
-	var target_input=$(this).data("target_input");
-	var text=$(this).html();
+    var santa_clara_icon_select=function(obj){
+	var value=obj.data("value");
+	var target_view=obj.data("target_view");
+	var target_input=obj.data("target_input");
+	var text=obj.html();
 	text+=' <i class="fa fa-caret-down"></i>';
 
 	$("#"+target_input).val(value);
 	$("#"+target_view).html(text);
 
-	$("ul.santaclaraiconselectul li.selected").removeClass("selected");
-	$(this).parent().addClass("selected");
-	$(this).parent().parent().hide();
+	obj.parent().find("li.selected").removeClass("selected");
+	obj.parent().addClass("selected");
+	obj.parent().parent().hide();
+    };
+
+    $(".santaclaraiconselect").click(function(event){
+	event.preventDefault();
+	santa_clara_icon_select($(this));
     });
 
     $(".santaclaraiconselectview").click(function(event){
 	event.preventDefault();
 	var optionsarea_id=$(this).data("optionsarea_id");
+	var target_view=$("#"+optionsarea_id).data("target_view");
+	var target_input=$("#"+optionsarea_id).data("target_input");
+	var current_val=$("#"+target_input).val();
+
+	if ( $("#"+optionsarea_id).data("filled")=="no" ) {
+	    var url="/santaclara-base/json/iconfamily/";
+	    $.getJSON( url )
+		.done(function(json){
+		    var html,i,j,iconfamily,icon,icon_html;
+		    
+		    for(i=0;i<json.length;i++){
+			iconfamily=json[i];
+			html+='<li class="familyname">'+iconfamily["name"]+'</li>\n';
+			for(j=0;j<iconfamily["icon_set"].length;j++){
+			    icon=iconfamily["icon_set"][j];
+			    icon_html=$('<div/>').text(icon["html"]).html();
+			    html+='<li data-value="'+icon["id"]+'"';
+			    if (parseInt(icon["id"])==parseInt(current_val))
+				html+=' class="selected"';
+			    html+='>';
+			    html+='><a class="santaclaraiconselect" href=""'
+			    html+=' data-value="'+icon["id"]+'"'
+			    html+=' data-target_view="'+target_view+'"'
+			    html+=' data-target_input="'+targt_input+'"'
+			    html+='>'+icon_html+'</a></li>\n';
+			}			
+		    }
+
+		    $(".santaclaraiconselect").click(function(event){
+			event.preventDefault();
+			santa_clara_icon_select($(this));
+		    });
+		    
+		    $("#"+optionsarea_id).data("filled","yes");
+		})
+		.fail(function(jqxhr,textStatus,error){
+		    var err = textStatus + ", " + error;
+		    console.log( "Request Failed: " + url );
+		    console.log( "Request Failed: " + err );
+		});
+
+	}
+
 	$("#"+optionsarea_id).toggle();
     });
 

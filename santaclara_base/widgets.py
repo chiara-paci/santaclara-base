@@ -63,7 +63,10 @@ class IconSelect(forms.HiddenInput):
             selected=SafeUnicode(icon.html)
         k_selected=unicode(value)
 
-        optionsarea=u'<ul id="'+field_id+'_optionsarea" class="santaclaraiconselectul">\n'
+        optionsarea=u'<ul id="'+field_id+'_optionsarea" class="santaclaraiconselectul"'
+        optionsarea+=u' data-filled="no"'
+        optionsarea+=u' data-target_view="'+field_id+'_view"'
+        optionsarea+=u' data-target_input="'+field_id+'">\n'
         # for k,v in self.choices:
         #     if not k: continue
         #     optionsarea+=u'<li data-value="k"'
