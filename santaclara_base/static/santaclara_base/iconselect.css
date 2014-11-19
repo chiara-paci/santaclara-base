@@ -29,6 +29,13 @@ ul.santaclaraiconselectul li {
     border: 1px solid #ccc !important;
 }
 
+ul.santaclaraiconselectul li.familyname {
+    border: none;
+    font-weight: bold;
+    text-align: center;
+    display: block;
+}
+
 ul.santaclaraiconselectul li.selected {
     border: 1px solid black !important;
 }

@@ -43,7 +43,7 @@ $(document).ready(function(){
 			    if (parseInt(icon["id"])==parseInt(current_val))
 				html+=' class="selected"';
 			    html+='>';
-			    html+='><a class="santaclaraiconselect" href=""'
+			    html+='<a class="santaclaraiconselect" href=""'
 			    html+=' data-value="'+icon["id"]+'"'
 			    html+=' data-target_view="'+target_view+'"'
 			    html+=' data-target_input="'+target_input+'"'
