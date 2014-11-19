@@ -19,7 +19,8 @@ ul.santaclaraiconselectul {
 }
 
 ul.santaclaraiconselectul li {
-    display: inline-block;
+    display: inline;
+    float: left;
     padding: .2em !important;
     margin: .2em !important;
     border: 1px solid #ccc !important;
