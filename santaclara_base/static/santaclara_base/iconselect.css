@@ -9,14 +9,14 @@ ul.santaclaraiconselectul {
 .santaclaraiconselectview {
     padding: .4em !important;
     margin: .2em !important;
-    border: 1px solid #eee !important;
+    border: 1px solid #ccc !important;
 }
 
 ul.santaclaraiconselectul li {
     display: inline;
     padding: .2em !important;
     margin: .2em !important;
-    border: 1px solid #eee !important;
+    border: 1px solid #ccc !important;
 }
 
 ul.santaclaraiconselectul li.selected {
