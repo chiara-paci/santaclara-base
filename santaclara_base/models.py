@@ -461,6 +461,9 @@ class IconFamily(models.Model):
 
     def __unicode__(self): return self.name
 
+    class Meta:
+        ordering = [ "name" ]
+
 class Icon(models.Model):
     family = models.ForeignKey(IconFamily)
     html = models.CharField(max_length=2048)
