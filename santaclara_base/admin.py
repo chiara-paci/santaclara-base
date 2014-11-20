@@ -89,7 +89,7 @@ class NameFormatCollectionAdmin(admin.ModelAdmin):
 admin.site.register(NameFormatCollection,NameFormatCollectionAdmin)
 
 class IconAdmin(admin.ModelAdmin):
-    list_display=[ "__unicode__","html_render","html",'family' ]
+    list_display=[ "__unicode__","id","html_render","html",'family' ]
     list_editable=[ "html",'family' ]
 
     class Media:

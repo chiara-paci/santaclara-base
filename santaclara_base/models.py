@@ -467,3 +467,5 @@ class Icon(models.Model):
 
     def __unicode__(self): return SafeUnicode(self.html)
 
+    class Meta:
+        ordering = [ "id" ]
