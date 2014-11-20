@@ -15,8 +15,8 @@ class Command(BaseCommand):
         print family_id,begin_id,end_id
         
         family=IconFamily.objects.get(id=family_id)
-        for i in range(begin_id,end_id+1):
-            icon=Icon.objects.get(id=i)
+        icons=Icon.objects.all().filter(id__in=range(begin_id,end_id+1))
+        for icon in icons:
             icon.family=family
             icon.save()
             print "set %s in %s" % (icon.html,family)
