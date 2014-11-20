@@ -44,9 +44,9 @@ $(document).ready(function(){
 			    icon_html=$('<div/>').html(icon["html"]).text();
 			    html+='<li data-value="'+icon["id"]+'"';
 			    if (parseInt(icon["id"])==parseInt(current_val))
-				html+=' class="selected iconfamily'+iconfamily["id"]+'"';
+				html+=' class="selected santaclaraiconli iconfamily'+iconfamily["id"]+'"';
 			    else
-				html+=' class="iconfamily'+iconfamily["id"]+'"';
+				html+=' class="santaclaraiconli iconfamily'+iconfamily["id"]+'"';
 			    html+='>';
 			    html+='<a class="santaclaraiconselect" href=""'
 			    html+=' data-value="'+icon["id"]+'"'
@@ -62,7 +62,7 @@ $(document).ready(function(){
 			santa_clara_icon_select($(this));
 		    });
 
-		    $(".santaclaraiconselect").hide();
+		    $(".santaclaraiconli").hide();
 
 		    $(".santaclarafamilytoggle").click(function(event){
 			event.preventDefault();
