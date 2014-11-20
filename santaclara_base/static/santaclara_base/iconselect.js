@@ -62,12 +62,14 @@ $(document).ready(function(){
 			santa_clara_icon_select($(this));
 		    });
 
+		    $(".santaclaraiconselect").hide();
+
 		    $(".santaclarafamilytoggle").click(function(event){
 			event.preventDefault();
 			var target_class=$(this).data("target_class");
 			$("."+target_class).toggle();
 		    });
-		    
+
 		    $("#"+optionsarea_id).data("filled","yes");
 
 		})
