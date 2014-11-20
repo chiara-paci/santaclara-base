@@ -2,6 +2,7 @@ ul.santaclaraiconselectul {
     list-style: none;
     text-align: left;
     padding: .2em !important;
+    padding-right: 1em;
     margin: 0 !important;
     position: absolute;
     z-index: 100;
