@@ -35,13 +35,18 @@ $(document).ready(function(){
 		    console.log(json);
 		    for(i=0;i<json.length;i++){
 			iconfamily=json[i];
-			html+='<li class="familyname">'+iconfamily["name"]+'</li>\n';
+			html+='<li class="familyname">';
+			html+='<a href="" class="santaclarafamilytoggle" data-target_class="iconfamily'+iconfamily["id"]+'">';
+			html+=iconfamily["name"];
+			html+=' <i class="fa fa-caret-right"></i></a></li>\n';
 			for(j=0;j<iconfamily["icon_set"].length;j++){
 			    icon=iconfamily["icon_set"][j];
 			    icon_html=$('<div/>').html(icon["html"]).text();
 			    html+='<li data-value="'+icon["id"]+'"';
 			    if (parseInt(icon["id"])==parseInt(current_val))
-				html+=' class="selected"';
+				html+=' class="selected iconfamily'+iconfamily["id"]+'"';
+			    else
+				html+=' class="iconfamily'+iconfamily["id"]+'"';
 			    html+='>';
 			    html+='<a class="santaclaraiconselect" href=""'
 			    html+=' data-value="'+icon["id"]+'"'
@@ -55,6 +60,12 @@ $(document).ready(function(){
 		    $(".santaclaraiconselect").click(function(event){
 			event.preventDefault();
 			santa_clara_icon_select($(this));
+		    });
+
+		    $(".santaclarafamilytoggle").click(function(event){
+			event.preventDefault();
+			var target_class=$(this).data("target_class");
+			$("."+target_class).toggle();
 		    });
 		    
 		    $("#"+optionsarea_id).data("filled","yes");

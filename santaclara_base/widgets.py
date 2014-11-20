@@ -67,19 +67,6 @@ class IconSelect(forms.HiddenInput):
         optionsarea+=u' data-filled="no"'
         optionsarea+=u' data-target_view="'+field_id+'_view"'
         optionsarea+=u' data-target_input="'+field_id+'">\n'
-        # for k,v in self.choices:
-        #     if not k: continue
-        #     optionsarea+=u'<li data-value="k"'
-        #     if unicode(k)==unicode(value):
-        #         selected=SafeUnicode(v)
-        #         k_selected=unicode(k)
-        #         optionsarea+=u' class="selected"'
-        #     optionsarea+='><a class="santaclaraiconselect" href=""'
-        #     optionsarea+=' data-value="'+unicode(k)+'"'
-        #     optionsarea+=' data-target_view="'+field_id+'_view"'
-        #     optionsarea+=' data-target_input="'+field_id+'"'
-        #     optionsarea+='>'
-        #     optionsarea+=SafeUnicode(v)+'</a></li>\n'
         optionsarea+="</ul>"
 
         hidden=u'<input id="'+field_id+'" name="'+name+'" type="hidden" value="'+k_selected+'" />'
