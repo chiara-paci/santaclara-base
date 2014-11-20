@@ -29,6 +29,10 @@ ul.santaclaraiconselectul li {
     border: 1px solid #ccc !important;
 }
 
+ul.santaclaraiconselectul li.santaclaraiconli:hover {
+    font-size: 300%;    
+}
+
 ul.santaclaraiconselectul li.familyname {
     border: none !important;
     font-weight: bold;
