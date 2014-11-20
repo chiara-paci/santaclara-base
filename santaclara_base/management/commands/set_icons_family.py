@@ -9,9 +9,9 @@ class Command(BaseCommand):
     help = 'Set icon family'
 
     def handle(self, *args, **options):
-        family_id=int(arg[0])
-        begin_id=int(arg[1])
-        end_id=int(arg[2])
+        family_id=int(args[0])
+        begin_id=int(args[1])
+        end_id=int(args[2])
         print family_id,begin_id,end_id
         
         family=IconFamily.objects.get(id=family_id)
