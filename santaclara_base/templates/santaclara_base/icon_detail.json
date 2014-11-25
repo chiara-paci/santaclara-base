@@ -1,0 +1,5 @@
+{
+    "id": {{ icon.id }},
+    "html": "{{ icon.html }}",
+    "family": {% include "santaclara_base/iconfamily_detail.json" with iconfamily=icon.family %}
+}

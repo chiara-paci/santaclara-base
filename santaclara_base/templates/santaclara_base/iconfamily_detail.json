@@ -1,0 +1,4 @@
+    {
+	"id": {{ iconfamily.id }},
+	"name": "{{ iconfamily.name }}"
+    }

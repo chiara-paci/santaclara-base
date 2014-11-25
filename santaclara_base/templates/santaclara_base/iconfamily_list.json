@@ -1,0 +1,16 @@
+[
+    {% for iconfamily in iconfamily_list %}
+    {
+	"id": {{ iconfamily.id }},
+	"name": "{{ iconfamily.name }}",
+	"icon_set": [
+	    {% for icon in iconfamily.icon_set.all %}
+	    {
+		"id": {{ icon.id }},
+		"html": "{{ icon.html }}"
+	    }{% if forloop.last %}{% else %},{% endif %}
+	    {% endfor %}
+	]
+    }{% if forloop.last %}{% else %},{% endif %}
+    {% endfor %}
+]
