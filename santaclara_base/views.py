@@ -102,8 +102,6 @@ class JsonListView(ListView):
         return(ret)
 
 class JsonDeleteView(DeleteView):
-    template_name = "deleteok.json"
-
     def form_valid(self,form): 
         response = super(JsonDeleteView, self).form_valid(form)
         return HttpResponse(json.dumps({"delete":"OK"}),content_type='application/json')
@@ -112,11 +110,15 @@ class JsonDeleteView(DeleteView):
         response = super(JsonDeleteView, self).form_invalid(form)
         return HttpResponse(json.dumps(form.errors),status=400,content_type='application/json')
 
-    def dispatch(self, *args, **kwargs):
-        response = super(JsonDeleteView, self).dispatch(*args, **kwargs)
-        response.content_type='application/json'
-        print response
-        return response
+    def delete(self,request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.delete()
+        return HttpResponse(json.dumps({"delete":"OK"}),content_type='application/json')
+
+    # def dispatch(self, *args, **kwargs):
+    #     response = super(JsonDeleteView, self).dispatch(*args, **kwargs)
+    #     response.content_type='application/json'
+    #     return response
 
 class JsonCreateView(CreateView):
     template_name_json_response = "santaclara_base/create_response.json"
