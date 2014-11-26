@@ -102,7 +102,7 @@ class JsonListView(ListView):
         return(ret)
 
 class JsonDeleteView(DeleteView):
-    success_url="/"
+    template_name = "deleteok.json"
 
     def form_valid(self,form): 
         response = super(JsonDeleteView, self).form_valid(form)
