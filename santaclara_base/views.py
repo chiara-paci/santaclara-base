@@ -115,6 +115,7 @@ class JsonDeleteView(DeleteView):
     def dispatch(self, *args, **kwargs):
         response = super(JsonDeleteView, self).dispatch(*args, **kwargs)
         response.content_type='application/json'
+        print response
         return response
 
 class JsonCreateView(CreateView):
