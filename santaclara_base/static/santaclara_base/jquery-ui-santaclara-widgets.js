@@ -220,6 +220,174 @@
     }); // sc.sc_hpanel
 
 
+    /********************************************************************************************************/
+
+    /***** sc_editbox ****/
+    /*** Agisce su un div con tre "a" dentro e due aree esterne (uno span/div e una textarea) ed eventualmente
+	 un'area da cancellare (tipicamente il parent).
+	 
+	 <div id="exampleparent">
+           <div id="example"
+                data-target_view_id="exampletext"
+                data-textarea_id="exampletextarea"
+                data-deletable="true"
+                data-delete_url="/obj/delete/url"
+	        data-delete_target_dom_id="exampleparent"
+	        data-save_url="/obj/save/url">
+	     <a href="" class="santa_clara_edit"><i class="fa fa-edit"></i></a>
+	     <a href="" class="santa_clara_delete"><i class="fa fa-trash-o"></i></a>
+	     <a href="" class="santa_clara_save"><i class="fa fa-save"></i></a>
+           </div>
+           <span id="exampletext">text</span>
+           <textarea id="exampletextarea">text</textarea>
+	 </div>
+
+	 $("#example").sc_editbox({
+             save_data_function: function(elem,text){
+	         ...
+	         return { ... };
+	     },
+             save_post_function: function(elem,resp){
+	         ...
+	     }
+	 });
+
+    ***/
+
+    $.widget("sc.sc_editbox", {
+	options: {
+	    edit_class: "santa_clara_edit",
+	    delete_class: "santa_clara_delete",
+	    save_class: "santa_clara_save",
+	    delete_dom_function: function(elem,delete_target_dom_id){
+		$("#"+delete_target_dom_id).remove();
+	    },
+	    delete_data_function: function(elem){
+		return {};
+	    },
+	    delete_post_function: function(elem,resp){},
+	    save_data_function: function(elem,text){
+		return { "text": text };
+	    },
+	    save_post_function: function(elem,resp){}
+	},
+	_create: function(){
+	    var self=this;
+	    var el=self.element;
+	    var opts=self.options;
+	    var html="";
+
+	    var target_view_id=el.data("target_view_id");
+	    var textarea_id=el.data("textarea_id");
+	    var textarea=$("#"+textarea_id);
+	    var target_view=$("#"+target_view_id);
+
+	    var edit_buttons=el.find("."+opts.edit_class);
+	    var save_buttons=el.find("."+opts.save_class);
+	    var delete_buttons=el.find("."+opts.delete_class);
+
+	    textarea.hide();
+	    target_view.show();
+	    edit_buttons.show();
+	    save_buttons.hide();
+	    delete_buttons.hide();
+
+	    /** edit **/
+	    edit_buttons.click(function(event){
+		event.preventDefault();
+		var target_view_id=el.data("target_view_id");
+		var textarea_id=el.data("textarea_id");
+		var textarea=$("#"+textarea_id);
+		var target_view=$("#"+target_view_id);
+		var edit_buttons=el.find("."+opts.edit_class);
+		var save_buttons=el.find("."+opts.save_class);
+		var delete_buttons=el.find("."+opts.delete_class);
+
+		console.log(target_view_id,textarea_id);
+
+		var text=target_view.text();
+		var deletable=false;
+		if ( (el.data("deletable")==true) ||
+		     (el.data("deletable")=="true") ||
+		     (el.data("deletable")=="yes") )
+		    deletable=true;
+		textarea.val(text);
+		textarea.show();
+		target_view.hide();
+		edit_buttons.hide();
+		save_buttons.show();
+		if (deletable)
+		    delete_buttons.show();
+	    });
+
+	    /** save **/
+	    save_buttons.click(function(event){
+		event.preventDefault();
+		var target_view_id=el.data("target_view_id");
+		var textarea_id=el.data("textarea_id");
+		var textarea=$("#"+textarea_id);
+		var target_view=$("#"+target_view_id);
+		var edit_buttons=el.find("."+opts.edit_class);
+		var save_buttons=el.find("."+opts.save_class);
+		var delete_buttons=el.find("."+opts.delete_class);
+
+		var text=textarea.val();
+		var data=opts.save_data_function(el,text);
+		var save_url=el.data("save_url");
+
+		$.post(save_url,data)
+		    .done( function(resp){
+			target_view.text(text);
+			opts.save_post_function(el,resp);
+			textarea.hide();
+			target_view.show();
+			edit_buttons.show();
+			save_buttons.hide();
+			delete_buttons.hide();
+		    } )
+		    .fail( function(ret) {
+			console.log("fail");
+			console.log(ret);
+			console.log(ret.responseText);
+			alert(ret.responseText+"\n"+ret.getResponseHeader());
+		    });
+	    });
+
+	    /** delete **/
+	    delete_buttons.click(function(event){
+		event.preventDefault();
+
+		var deletable=false;
+		if ( (el.data("deletable")==true) ||
+		     (el.data("deletable")=="true") ||
+		     (el.data("deletable")=="yes") )
+		    deletable=true;
+		if (!deletable) return;
+
+		var delete_target_dom_id=el.data("delete_target_dom_id");
+		opts.delete_dom_function(el,delete_target_dom_id);
+
+		var delete_url=el.data("delete_url");
+		if (!delete_url) return;
+
+		var data=opts.delete_data_function(el);
+
+		$.post(delete_url,data)
+		    .done( function(resp){
+			opts.delete_post_function(el,resp);
+		    } )
+		    .fail( function(ret) {
+			console.log("fail");
+			console.log(ret);
+			console.log(ret.responseText);
+			alert(ret.responseText+"\n"+ret.getResponseHeader());
+		    });
+	    });
+	    
+	}// sc.sc_editbox._create
+
+    }); // sc.sc_editbox
+
     /****/
  
 })(jQuery);
