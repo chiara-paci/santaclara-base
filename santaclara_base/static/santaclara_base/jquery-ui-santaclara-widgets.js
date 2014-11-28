@@ -388,6 +388,100 @@
 
     }); // sc.sc_editbox
 
+    /***** sc_addform ****/
+    /*** Agisce su un "a" e un div correlato contenente il form.
+	 
+	 <a href="" id="example" class="exampleclass" data-dialog_id="examplebox">Example</a>
+	 <div class="form" id="exampleform">
+         ...
+         <form id="exampleform"> 
+         ...
+         </form>
+         <div class="commands">
+         <a href="" class="santa_clara_submit" data-submit_url="/example/url">example</a> 
+         <a href="" class="santa_clara_cancel"">cancel</a> 
+         </div>
+	 </div>
+
+	 $("#example").sc_addform({
+	 form_data :function(submit_button,form){
+	 ...
+	 return { ... };
+	 },
+	 form_setup: function(elem){
+	 ...
+	 },
+	 form_post: function(resp){
+	 ...
+	 }
+	 });
+
+    ***/
+
+    $.widget("sc.sc_addform", {
+	options: {
+	    submit_class: "santa_clara_submit",
+	    cancel_class: "santa_clara_cancel",
+	    form_setup: function(elem){},
+	    form_post: function(resp){},
+	    form_data: function(submit_button,form){ return {}; }
+	},
+	_create: function(){
+	    var self=this;
+	    var el=self.element;
+	    var opts=self.options;
+	    var html="";
+
+	    var dialog_id=el.data("dialog_id");
+	    var dialog=$("#"+dialog_id);
+
+	    var submit_buttons=dialog.find("."+opts.submit_class);
+	    var cancel_buttons=dialog.find("."+opts.cancel_class);
+
+	    dialog.hide();
+
+	    /** el **/
+	    el.click(function(event){
+		event.preventDefault();
+		var dialog_id=el.data("dialog_id");
+		var form=$("#"+dialog_id).find("form").first();
+		opts.form_setup(el,form);
+		$("#"+dialog_id).show();
+	    });
+
+	    /** cancel **/
+	    cancel_buttons.click(function(event){
+		event.preventDefault();
+		var dialog_id=el.data("dialog_id");
+		$("#"+dialog_id).hide();
+	    });
+
+	    /** submit **/
+	    submit_buttons.click(function(event){
+		event.preventDefault();
+		var dialog_id=el.data("dialog_id");
+		var submit_url=$(this).data("submit_url");
+		var form=$("#"+dialog_id).find("form").first();
+		var data=opts.form_data($(this),form);
+
+		$("#"+dialog_id).hide();
+
+		$.post(submit_url,data)
+		    .done( function(resp){
+			opts.form_post(resp);
+		    } )
+		    .fail( function(ret) {
+			console.log("fail");
+			console.log(ret);
+			console.log(ret.responseText);
+			alert(ret.responseText+"\n"+ret.getResponseHeader());
+		    });
+		
+	    });
+	    
+	}// sc.sc_addform._create
+
+    }); // sc.sc_addform
     /****/
  
 })(jQuery);
