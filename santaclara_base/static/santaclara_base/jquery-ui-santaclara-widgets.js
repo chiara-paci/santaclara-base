@@ -291,6 +291,9 @@
 	    target_view.show();
 	    edit_buttons.show();
 	    save_buttons.hide();
+
+	    console.log(opts);
+
 	    if (opts.delete_show_always && opts.deletable)
 		delete_buttons.show();
 	    else
