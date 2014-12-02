@@ -299,11 +299,9 @@
 		deletable=true;
 
 	    if (opts.delete_show_always && deletable) {
-		console.log("delete show",opts.delete_show_always,deletable,opts.delete_show_always && deletable);
 		delete_buttons.show();
 	    }
 	    else {
-		console.log("delete hide",opts.delete_show_always,deletable,opts.delete_show_always && deletable);
 		delete_buttons.hide();
 	    }
 
@@ -317,8 +315,6 @@
 		var edit_buttons=el.find("."+opts.edit_class);
 		var save_buttons=el.find("."+opts.save_class);
 		var delete_buttons=el.find("."+opts.delete_class);
-
-		console.log(target_view_id,textarea_id);
 
 		var text=target_view.text();
 		var deletable=false;
