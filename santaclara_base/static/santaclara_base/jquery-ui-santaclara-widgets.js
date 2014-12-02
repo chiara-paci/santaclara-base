@@ -292,12 +292,18 @@
 	    edit_buttons.show();
 	    save_buttons.hide();
 
-	    if (opts.delete_show_always && opts.deletable) {
-		console.log("delete show",opts.delete_show_always,opts.deletable,opts.delete_show_always && opts.deletable);
+	    var deletable=false;
+	    if ( (el.data("deletable")==true) ||
+		 (el.data("deletable")=="true") ||
+		 (el.data("deletable")=="yes") )
+		deletable=true;
+
+	    if (opts.delete_show_always && deletable) {
+		console.log("delete show",opts.delete_show_always,deletable,opts.delete_show_always && deletable);
 		delete_buttons.show();
 	    }
 	    else {
-		console.log("delete hide",opts.delete_show_always,opts.deletable,opts.delete_show_always && opts.deletable);
+		console.log("delete hide",opts.delete_show_always,deletable,opts.delete_show_always && deletable);
 		delete_buttons.hide();
 	    }
 
@@ -339,6 +345,11 @@
 		var edit_buttons=el.find("."+opts.edit_class);
 		var save_buttons=el.find("."+opts.save_class);
 		var delete_buttons=el.find("."+opts.delete_class);
+		var deletable=false;
+		if ( (el.data("deletable")==true) ||
+		     (el.data("deletable")=="true") ||
+		     (el.data("deletable")=="yes") )
+		    deletable=true;
 
 		var text=textarea.val();
 		var data=opts.save_data_function(el,text);
@@ -352,7 +363,7 @@
 			target_view.show();
 			edit_buttons.show();
 			save_buttons.hide();
-			if (opts.delete_show_always && opts.deletable)
+			if (opts.delete_show_always && deletable)
 			    delete_buttons.show();
 			else
 			    delete_buttons.hide();
