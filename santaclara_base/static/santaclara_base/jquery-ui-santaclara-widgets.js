@@ -292,12 +292,14 @@
 	    edit_buttons.show();
 	    save_buttons.hide();
 
-	    console.log(opts);
-
-	    if (opts.delete_show_always && opts.deletable)
+	    if (opts.delete_show_always && opts.deletable) {
+		console.log("delete show");
 		delete_buttons.show();
-	    else
+	    }
+	    else {
+		console.log("delete hide");
 		delete_buttons.hide();
+	    }
 
 	    /** edit **/
 	    edit_buttons.click(function(event){
