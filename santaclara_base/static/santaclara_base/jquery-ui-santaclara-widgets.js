@@ -377,7 +377,6 @@
 		textarea.keyup(function(event){
 		    if (event.which!=13) return;
 		    event.preventDefault();
-		    console.log(event.which,event);
 		    save_object();
 		});
 
