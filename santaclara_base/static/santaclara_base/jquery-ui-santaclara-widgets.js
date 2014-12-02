@@ -332,20 +332,7 @@
 		    delete_buttons.show();
 	    });
 
-	    /** enter **/
-
-	    if (opts.bind_enter)
-		textarea.keyup(function(event){
-		    if (event.which!=13)
-			console.log(event.which,event);
-			return;
-		    event.preventDefault();
-		    el.find("."+opts.save_class).first().click();
-		});
-
-	    /** save **/
-	    save_buttons.click(function(event){
-		event.preventDefault();
+	    var save_object=function(){
 		var target_view_id=el.data("target_view_id");
 		var textarea_id=el.data("textarea_id");
 		var textarea=$("#"+textarea_id);
@@ -382,6 +369,23 @@
 			console.log(ret.responseText);
 			alert(ret.responseText+"\n"+ret.getResponseHeader());
 		    });
+	    };
+
+	    /** enter **/
+
+	    if (opts.bind_enter)
+		textarea.keyup(function(event){
+		    if (event.which!=13)
+			console.log(event.which,event);
+			return;
+		    event.preventDefault();
+		    save_object();
+		});
+
+	    /** save **/
+	    save_buttons.click(function(event){
+		event.preventDefault();
+		save_object();
 	    });
 
 	    /** delete **/
