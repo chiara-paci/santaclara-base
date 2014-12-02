@@ -375,10 +375,9 @@
 
 	    if (opts.bind_enter)
 		textarea.keyup(function(event){
-		    if (event.which!=13)
-			console.log(event.which,event);
-			return;
+		    if (event.which!=13) return;
 		    event.preventDefault();
+		    console.log(event.which,event);
 		    save_object();
 		});
 
