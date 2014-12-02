@@ -260,7 +260,7 @@
 	    delete_class: "santa_clara_delete",
 	    save_class: "santa_clara_save",
 	    delete_show_always: false,
-	    bind_enter_and_back: false,
+	    bind_enter: false,
 	    delete_dom_function: function(elem,delete_target_dom_id){
 		$("#"+delete_target_dom_id).remove();
 	    },
@@ -334,7 +334,7 @@
 
 	    /** enter **/
 
-	    if (opts.bind_enter_and_back)
+	    if (opts.bind_enter)
 		textarea.keyup(function(event){
 		    if (event.which!=13)
 			console.log(event.which,event);
