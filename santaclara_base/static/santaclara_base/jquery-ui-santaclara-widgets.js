@@ -347,7 +347,10 @@
 			target_view.show();
 			edit_buttons.show();
 			save_buttons.hide();
-			delete_buttons.hide();
+			if (opts.delete_show_always && opts.deletable)
+			    delete_buttons.show();
+			else
+			    delete_buttons.hide();
 		    } )
 		    .fail( function(ret) {
 			console.log("fail");
