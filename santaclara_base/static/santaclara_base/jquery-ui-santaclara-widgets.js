@@ -293,11 +293,11 @@
 	    save_buttons.hide();
 
 	    if (opts.delete_show_always && opts.deletable) {
-		console.log("delete show");
+		console.log("delete show",opts.delete_show_always,opts.deletable,opts.delete_show_always && opts.deletable);
 		delete_buttons.show();
 	    }
 	    else {
-		console.log("delete hide");
+		console.log("delete hide",opts.delete_show_always,opts.deletable,opts.delete_show_always && opts.deletable);
 		delete_buttons.hide();
 	    }
 
