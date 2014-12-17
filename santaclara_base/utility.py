@@ -47,7 +47,6 @@ def numberize(cat,num):
             L.append(m)
         L.append(d%26)
         L.reverse()
-        print L
         T=reduce(lambda a,b: a+b,map(lambda x: chr(ord(base)+x),L))
         return T
     if cat in [ "roman","bigroman" ]:
