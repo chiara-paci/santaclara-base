@@ -227,8 +227,13 @@ class VersionedAbstract(models.Model):
         models.Model.save(self, *args, **kwargs)
         qset=self.versions.order_by('-last_modified')
         if not qset: return
+        selected=False
         for v in qset:
+            if selected:
+                v.current=False
+                continue
             if v.valid:
+                selected=True
                 if v==self.current:
                     self.current.is_current=True
                     self.current.save()
@@ -238,8 +243,9 @@ class VersionedAbstract(models.Model):
                 self.current.is_current=False
                 self.current.save()
                 self.current=v
-                models.Model.save(self, *args, **kwargs)
-                return
+        if selected:
+            models.Model.save(self, *args, **kwargs)
+            return
         v=qset[0]
         v.valid=True
         v.save()
@@ -255,34 +261,36 @@ class VersionedAbstract(models.Model):
     def set_current(self):
         qset=self.versions.order_by('-last_modified')
         if not qset: return
+        selected=False
         for v in qset:
+            if selected:
+                v.current=False
+                continue
             if v.valid:
+                selected=True
                 if v==self.current:
                     self.current.is_current=True
                     self.current.save()
-                    print "set_current as valid current",self.current.label
                     return
                 v.is_current=True
                 v.save()
                 self.current.is_current=False
                 self.current.save()
                 self.current=v
-                self.save()
-                print "set_current as valid non current -> current",self.current.label
-                return
+        if selected:
+            self.save()
+            return
         v=qset[0]
         v.valid=True
         v.save()
         if v==self.current:
             self.current.is_current=True
             self.current.save()
-            print "set_current as non valid current",self.current.label
             return
         self.current.is_current=False
         self.current.save()
         self.current=v
         self.save()
-        print "set_current as non valid non current -> current",self.current.label
 
     def save_text(self,request,text,as_new_version=True):
         if self.current.id==0:
