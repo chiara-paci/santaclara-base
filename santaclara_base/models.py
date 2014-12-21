@@ -230,11 +230,11 @@ class VersionedAbstract(models.Model):
         selected=False
         for v in qset:
             if selected:
-                v.current=False
+                v.is_current=False
                 v.save()
                 continue
             if not v.valid:
-                v.current=False
+                v.is_current=False
                 v.save()
                 continue
             selected=True
@@ -271,11 +271,11 @@ class VersionedAbstract(models.Model):
         selected=False
         for v in qset:
             if selected:
-                v.current=False
+                v.is_current=False
                 v.save()
                 continue
             if not v.valid:
-                v.current=False
+                v.is_current=False
                 v.save()
                 continue
             selected=True
