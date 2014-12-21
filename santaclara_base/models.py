@@ -246,6 +246,9 @@ class VersionedAbstract(models.Model):
         if selected:
             models.Model.save(self, *args, **kwargs)
             return
+        for v in qset:
+            v.is_current=False
+            v.save()
         v=qset[0]
         v.valid=True
         v.save()
@@ -280,6 +283,9 @@ class VersionedAbstract(models.Model):
         if selected:
             self.save()
             return
+        for v in qset:
+            v.is_current=False
+            v.save()
         v=qset[0]
         v.valid=True
         v.save()
