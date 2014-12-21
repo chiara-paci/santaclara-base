@@ -231,6 +231,7 @@ class VersionedAbstract(models.Model):
         for v in qset:
             if selected:
                 v.current=False
+                v.save()
                 continue
             if v.valid:
                 selected=True
@@ -268,6 +269,7 @@ class VersionedAbstract(models.Model):
         for v in qset:
             if selected:
                 v.current=False
+                v.save()
                 continue
             if v.valid:
                 selected=True
