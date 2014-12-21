@@ -223,6 +223,35 @@ class VersionedAbstract(models.Model):
     def text(self):
         return self.current.text
 
+    def save(self, *args, **kwargs):
+        models.Model.save(self, *args, **kwargs)
+        qset=self.versions.order_by('-last_modified')
+        if not qset: return
+        for v in qset:
+            if v.valid:
+                if v==self.current:
+                    self.current.is_current=True
+                    self.current.save()
+                    return
+                v.is_current=True
+                v.save()
+                self.current.is_current=False
+                self.current.save()
+                self.current=v
+                models.Model.save(self, *args, **kwargs)
+                return
+        v=qset[0]
+        v.valid=True
+        v.save()
+        if v==self.current:
+            self.current.is_current=True
+            self.current.save()
+            return
+        self.current.is_current=False
+        self.current.save()
+        self.current=v
+        models.Model.save(self, *args, **kwargs)
+
     def set_current(self):
         qset=self.versions.order_by('-last_modified')
         if not qset: return
