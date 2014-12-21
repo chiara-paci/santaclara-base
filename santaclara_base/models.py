@@ -225,7 +225,7 @@ class VersionedAbstract(models.Model):
 
     def save(self, *args, **kwargs):
         models.Model.save(self, *args, **kwargs)
-        qset=self.versions.order_by('-last_modified')
+        qset=self.versions.order_by('-created')
         if not qset: return
         selected=False
         for v in qset:
