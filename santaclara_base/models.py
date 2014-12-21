@@ -233,17 +233,20 @@ class VersionedAbstract(models.Model):
                 v.current=False
                 v.save()
                 continue
-            if v.valid:
-                selected=True
-                if v==self.current:
-                    self.current.is_current=True
-                    self.current.save()
-                    return
-                v.is_current=True
+            if not v.valid:
+                v.current=False
                 v.save()
-                self.current.is_current=False
+                continue
+            selected=True
+            if v==self.current:
+                self.current.is_current=True
                 self.current.save()
-                self.current=v
+                continue
+            v.is_current=True
+            v.save()
+            self.current.is_current=False
+            self.current.save()
+            self.current=v
         if selected:
             models.Model.save(self, *args, **kwargs)
             return
@@ -271,17 +274,20 @@ class VersionedAbstract(models.Model):
                 v.current=False
                 v.save()
                 continue
-            if v.valid:
-                selected=True
-                if v==self.current:
-                    self.current.is_current=True
-                    self.current.save()
-                    return
-                v.is_current=True
+            if not v.valid:
+                v.current=False
                 v.save()
-                self.current.is_current=False
+                continue
+            selected=True
+            if v==self.current:
+                self.current.is_current=True
                 self.current.save()
-                self.current=v
+                continue
+            v.is_current=True
+            v.save()
+            self.current.is_current=False
+            self.current.save()
+            self.current=v
         if selected:
             self.save()
             return
