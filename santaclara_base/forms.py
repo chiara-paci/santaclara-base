@@ -55,7 +55,8 @@ class VersionAdminForm(forms.ModelForm):
     class Meta:
         model = Version
         widgets = {
-            "text": SantaClaraJQueryUIWidget(attrs={"style":"adminstyle"})
+            'text': SantaClaraAceWidget
+            #"text": SantaClaraJQueryUIWidget(attrs={"style":"adminstyle"})
             }
 
 class WithIconForm(forms.ModelForm):
