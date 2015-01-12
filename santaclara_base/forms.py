@@ -1,7 +1,8 @@
 from django import forms
 from santaclara_base.widgets import TagWidget,IconSelect
-from santaclara_editor.widgets import SantaClaraSimpleWidget,SantaClaraJQueryUIWidget
 from santaclara_base.models import Annotation,Tagging,Comment,Version
+
+from santaclara_editor.widgets import SantaClaraSimpleWidget,SantaClaraJQueryUIWidget,SantaClaraAceWidget
 
 class AnnotationForm(forms.ModelForm):
     class Meta:
@@ -46,7 +47,8 @@ class VersionForm(forms.ModelForm):
         widgets = {
             'object_id': forms.HiddenInput,
             'content_type': forms.HiddenInput,
-            'text': SantaClaraSimpleWidget
+            #'text': SantaClaraSimpleWidget
+            'text': SantaClaraAceWidget
             }
 
 class VersionAdminForm(forms.ModelForm):
