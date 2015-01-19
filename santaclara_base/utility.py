@@ -2,7 +2,7 @@ def slugify(S):
     t=filter(lambda x: x.isalnum() or x==' ',unicode(S))
     t=t.replace(" ","-")
     t=t.lower()
-    t=t.strip("-")
+    t=t.strip("-").replace("--","-")
     return t
 
 def alphabetic_lower(num):
