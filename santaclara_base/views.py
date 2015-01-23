@@ -9,7 +9,9 @@ from santaclara_base.models import Annotation,Tagging,Tag,Comment,Version
 from santaclara_base.annotability import annotator
 from santaclara_base.taggability import taggator
 from santaclara_base.moderators import moderator
+
 from santaclara_base.forms import AnnotationForm,TaggingForm,CommentForm,VersionForm
+from santaclara_base.forms import VersionedUpdateTextForm,VersionedVersionFormset
 
 import santaclara_base.settings as settings
 
@@ -333,4 +335,248 @@ class JsonDeleteVersionView(JsonDeleteView):
                                           content_type='application/json')
         return super(JsonDeleteVersionView,self).post(request, *args, **kwargs)
 
+#### da spostare
+
+class JsonUpdateMassiveView(MultipleObjectMixin,View):
+    template_name = "object_list.json"
+    template_name_json_response = "object_list.json"
+    form_class=None
+
+    def get_queryset(self):
+        return self.model.objects.all()
+
+    def get(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        return render(request, self.template_name,
+                      { self.context_object_name: queryset },
+                      content_type='application/json')
+
+    def get_context_data(self, **kwargs):
+        context = super(JsonUpdateMassiveView, self).get_context_data(**kwargs)
+        context[self.context_object_name] = self.get_queryset()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        formset = self.formset_class(request.POST,request.FILES,queryset=self.get_queryset())
+        if formset.is_valid():
+            formset.save()
+            object_list=[]
+            for form in formset:
+                object_list.append(form.instance)
+            return render(request,self.template_name_json_response,
+                          {self.context_object_name: object_list},
+                          content_type='application/json')
+        data={}
+        data["formset_errors"]=formset.errors
+        data["form_errors"]=[]
+        for form in formset:
+            data["form_errors"].append({"instance": form.instance.id,"errors":form.errors})
+        data=json.dumps(data)
+        return HttpResponse(data,status=400,content_type='application/json')
+
+class JsonUpdateSingleView(SingleObjectMixin,View): 
+    context_object_name = "object"
+    model=None
+    template_name="object_detail.json"
+    template_name_json_response="object_detail.json"
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object(queryset=self.model.objects.all())
+        return render(request, self.template_name,
+                      { self.context_object_name: self.object },
+                      content_type='application/json')
+
+    def get_context_data(self, **kwargs):
+        context = super(JsonUpdateFormView, self).get_context_data(**kwargs)
+        context[self.context_object_name] = self.object
+        return context
+
+class JsonUpdateFormView(JsonUpdateSingleView): 
+    form_class=None
+
+    def get_post_form(self,request):
+        return self.form_class(request.POST)
+
+    def post_form_is_valid(self,request,form): 
+        context={}
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object(queryset=self.model.objects.all())
+
+        form=self.get_post_form(request)
+        if form.is_valid():
+            context=self.post_form_is_valid(request,form)
+            return render(request,self.template_name_json_response,
+                          context,content_type='application/json')
+        data={}
+        data["form_errors"]=form.errors
+        data=json.dumps(data)
+        return HttpResponse(data,status=400,content_type='application/json')
+
+class JsonUpdateFormsetView(JsonUpdateSingleView):
+    formset_class=None
+
+    def get_post_formset(self,request):
+        return self.formset_class(request.POST)
+
+    def post_formset_is_valid(self,request,formset):
+        context={}
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object(queryset=Book.objects.all())
+
+        formset=self.get_post_formset(request)
+        if formset.is_valid():
+            context=self.post_formset_is_valid(request,formset)
+            return render(request,self.template_name_json_response,
+                          context,content_type='application/json')
+        data={}
+        data["formset_errors"]=formset.errors
+        for form in formset:
+            data["form_errors"].append({"instance": form.instance.id,"errors":form.errors})
+        data=json.dumps(data)
+        return HttpResponse(data,status=400,content_type='application/json')
+
+class JsonAddChildView(JsonUpdateFormView):
+    context_object_child_name = "child"
+    child_model = None
+    filtered_by_user = False
+    default_parameters = {}
+    
+    def get_post_form(self,request):
+        foreign_keys = []
+        for field in self.child_model._meta.fields:
+            if isinstance(self.child_model._meta.get_field_by_name(field.name)[0], models.ForeignKey):
+                if field.rel.to == self.model:
+                    foreign_keys.append(field.name)
+        if not foreign_keys:
+            raise Exception("%s has no ForeignKey to %s",self.child_model,self.model)
+        if len(foreign_keys)>1:
+            raise Exception("%s has too many ForeignKey to %s",self.child_model,self.model)
+        parent_field=foreign_keys[0]
+
+        if self.filtered_by_user:
+            queryset=self.model.objects.by_user(request.user)
+        else:
+            queryset=self.model.objects.all()
+        self.object = self.get_object(queryset=queryset)
+        form=self.form_class(request.POST)
+        setattr(form.instance,parent_field,self.object)
+        return form
+
+    def post_form_is_valid(self,request,form):
+        self.object = self.get_object(queryset=self.model.objects.all())
+        child_name=self.child_model.__name__.lower()
+
+        params={}
+        for k,v in self.default_parameters.items:
+            params[k]=v
+        for k,v in form.cleaned_data.items:
+            params[k]=v
+        params["user"]=request.user
+
+        f_add=getattr(self.object,"add_"+child_name)
+        child=f_add(params)
+
+        return { self.context_object_child_name: child }
+
+class JsonPositionedInsertView(JsonUpdateFormView): 
+    template_name_json_response = "books/object_insert_response.json"
+    parent_model = None
+    context_object_parent_name = "parent"
+    context_object_siblings_name = "siblings"
+    parent_filtered_by_user = False
+
+    def get_post_form(self,request):
+        if self.parent_filtered_by_user:
+            parent_queryset=self.parent_model.objects.by_user(request.user)
+        else:
+            parent_queryset=self.parent_model.objects.all()
+        class MyForm(forms.Form):
+            parent = forms.ModelChoiceField(queryset=parent_queryset, empty_label=None)
+            before = forms.IntegerField()
+        form=MyForm(request.POST)
+        return form
+
+    def post_form_is_valid(self,request,form):
+        self.object = self.get_object(queryset=self.model.objects.by_user(request.user))
+        parent=form.cleaned_data["parent"]
+        before=form.cleaned_data["before"]
+        self.object.pos_insert(parent,before)
+        f=getattr(parent,"siblings_"+self.model.__name__.lower())
+        return {
+            self.context_object_siblings_name: f(), 
+            "parent_pos": parent.full_pos()
+            }
+
+class JsonPositionedAppendView(JsonUpdateFormView): 
+    template_name_json_response = "books/object_insert_response.json"
+    parent_model = None
+    context_object_parent_name = "parent"
+    context_object_siblings_name = "siblings"
+    parent_filtered_by_user = False
+
+    def get_post_form(self,request):
+        if self.parent_filtered_by_user:
+            parent_queryset=self.parent_model.objects.by_user(request.user)
+        else:
+            parent_queryset=self.parent_model.objects.all()
+        class MyForm(forms.Form):
+            parent = forms.ModelChoiceField(queryset=parent_queryset, empty_label=None)
+        form=MyForm(request.POST)
+        return form
+
+    def post_form_is_valid(self,request,form):
+        self.object = self.get_object(queryset=self.model.objects.by_user(request.user))
+        parent=form.cleaned_data["parent"]
+        self.object.pos_append(parent)
+        f=getattr(parent,"siblings_"+self.model.__name__.lower())
+        return {
+            self.context_object_siblings_name: f(), 
+            "parent_pos": parent.full_pos()
+            }
+    
+class JsonVersionedSetCurrentView(JsonUpdateFormView): 
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object(queryset=self.model.objects.all())
+        self.object.set_current()
+        return render(request,self.template_name_json_response,
+                      {self.context_object_name: self.object},
+                      content_type='application/json')
+
+class JsonVersionedUpdateTextView(JsonUpdateFormView): 
+    as_new_version=False
+    form_class=VersionedUpdateTextForm
+
+    def post_form_is_valid(self,request,form):
+        self.object = self.get_object(queryset=self.model.objects.all())
+        text=form.cleaned_data["text"]
+        self.object.save_text(request,text,as_new_version=self.as_new_version)
+        return { self.context_object_name: self.object }
+
+class VersionedUpdateVersionsView(DetailView):
+    version_formset_class=VersionedVersionFormset
+
+    def get_context_data(self,**kwargs):
+        self.object=self.get_object(queryset=self.model.objects.all())
+        context=super(VersionedUpdateVersionsView, self).get_context_data(**kwargs)
+        context['formset_versions']=self.version_formset_class(queryset=self.object.versions.all().order_by('-created'))
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object(queryset=self.model.objects.all())
+        formset=self.version_formset_class(request.POST)
+        if formset.is_valid():
+            formset.save()
+            self.object.save()
+        return render(request,self.template_name,self.get_context_data())
+
+class VersionedUpdateView(UpdateView):
+    def get_context_data(self, **kwargs):
+        context = super(VersionedUpdateView, self).get_context_data(**kwargs)
+        self.object=self.get_object(queryset=self.model.objects.all())
+        context['form_text'] = VersionedUpdateTextForm(instance=self.object.current)
+        return context
 

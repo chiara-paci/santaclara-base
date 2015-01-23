@@ -64,3 +64,17 @@ class WithIconForm(forms.ModelForm):
         widgets = {
             "icon": IconSelect
             }
+
+class VersionedUpdateTextForm(forms.ModelForm):
+    class Meta:
+        model = Version
+        fields = [ "text" ]
+
+class VersionedVersionForm(forms.ModelForm):
+    class Meta:
+        model = Version
+        fields = [ "valid","label" ]
+
+VersionedVersionFormset=modelformset_factory(Version, extra=0, 
+                                             can_delete=True, 
+                                             form=VersionedVersionForm)
