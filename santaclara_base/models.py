@@ -7,6 +7,8 @@ from django.contrib.contenttypes import generic
 from django.utils.html import format_html
 from django.utils.safestring import SafeUnicode
 
+from django.db.models import Max
+
 from santaclara_base.annotability import annotator,DisableAnnotationAnnotator,AllowForOwnerAnnotator,AllowForStaffAnnotator
 from santaclara_base.taggability import taggator,DisableTagTaggator,AllowForOwnerTaggator,AllowForStaffTaggator
 
