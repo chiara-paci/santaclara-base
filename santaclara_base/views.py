@@ -344,7 +344,7 @@ class JsonDeleteVersionView(JsonDeleteView):
 class JsonUpdateMassiveView(MultipleObjectMixin,View):
     template_name = "object_list.json"
     template_name_json_response = "object_list.json"
-    form_class=None
+    formset_class=None
 
     def get_queryset(self):
         return self.model.objects.all()
