@@ -1,5 +1,8 @@
 import json
 
+from django.views.generic.detail import SingleObjectMixin
+from django.views.generic.list   import MultipleObjectMixin
+
 from django.http import HttpResponseRedirect,HttpResponse,HttpResponseBadRequest
 from django.contrib.auth.models import User
 from django.views.generic import ListView,UpdateView,CreateView,RedirectView,DeleteView,DetailView,TemplateView
