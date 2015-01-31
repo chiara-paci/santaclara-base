@@ -33,7 +33,7 @@ def permission_or_404(perm,model=None):
                 raise Http404
             if request.user.has_perm(perm,obj=obj):
                 return view(request,pk=pk,*args,**kwargs)
-            return Http404
+            raise Http404
 
         if model:
             return dec_view

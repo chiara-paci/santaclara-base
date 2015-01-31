@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User,Permission
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.utils.html import format_html
@@ -490,7 +490,6 @@ class DisplayedAbstract(models.Model):
     class Meta:
         abstract = True
 
-
 ###
 
 RE_NAME_SEP=re.compile("('| |-)")
@@ -645,3 +644,23 @@ class Icon(models.Model):
 
     class Meta:
         ordering = [ "id" ]
+
+### idee
+
+# class ActionLog(models.Model):
+#     content_type = models.ForeignKey(ContentType)
+#     object_id = models.PositiveIntegerField()
+#     content_object = generic.GenericForeignKey('content_type','object_id')
+#     timestamp = models.DateTimeField(auto_now_add=True)
+#     user = models.ForeignKey(User)
+#     permission = models.ForeignKey(Permission)
+#     permission_granted = models.BooleanField()
+#     action = models.CharField(max_length=2048,editable=False)
+
+# annotator.register(ActionLog,AllowForStaffAnnotator)
+# taggator.register(ActionLog,AllowForStaffTaggator)
+
+# class ActionIP(PostionAbstract):
+#     action = models.ForeignKey(ActionLog)
+#     ip_address = models.GenericIPAddressField(protocol='both',unpack_ipv4=True)
+
