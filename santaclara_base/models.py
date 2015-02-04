@@ -308,7 +308,10 @@ class LocatedAbstract(models.Model):
 
 class CommentManager(models.Manager):
     def all_public(self):
-        return self.all().filter(is_public=True)
+        return self.all().filter(is_public=True).filter(is_removed=False)
+
+    def all_by_model(self,app_name,model_name):
+        return self.all().filter(content_type__app_label=app_name,content_type__model=model)
 
     def order_by_last_modified(self):
         return self.order_by('last_modified')
