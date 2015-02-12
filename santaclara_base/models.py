@@ -648,6 +648,34 @@ class Icon(models.Model):
     class Meta:
         ordering = [ "id" ]
 
+class ConcreteSubclassableAbstract(models.Model):
+    actual_class = models.ForeignKey(ContentType,related_name='+',editable=False)
+
+    class Meta:
+        abstract = True
+
+    def actual(self):
+        model = self.actual_class.model
+        mymodel = unicode(self.__class__.__name__).lower()
+        if model==mymodel: return self
+        return self.__getattribute__(model)
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.actual_class = ContentType.objects.get_for_model(self.__class__)
+        super(ConcreteSubclassableAbstract, self).save(*args, **kwargs)
+
+    def _prefer_actual(self,attr_name,default):
+        obj=self.actual()
+        if not obj: return(default)
+        if not hasattr(obj,attr_name): return default
+        attr=getattr(obj,attr_name)
+        if attr==getattr(self,attr_name): return default
+        if callable(attr):
+            return attr()
+        else:
+            return attr
+
 ### idee
 
 # class ActionLog(models.Model):
