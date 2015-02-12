@@ -3,13 +3,12 @@ import json
 from django.views.generic import View
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.list   import MultipleObjectMixin
-
 from django import forms
-
 from django.http import HttpResponseRedirect,HttpResponse,HttpResponseBadRequest
 from django.contrib.auth.models import User
 from django.views.generic import ListView,UpdateView,CreateView,RedirectView,DeleteView,DetailView,TemplateView
 from django.shortcuts import get_object_or_404,render
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from santaclara_base.models import Annotation,Tagging,Tag,Comment,Version
 from santaclara_base.annotability import annotator
@@ -585,4 +584,31 @@ class VersionedUpdateView(UpdateView):
         self.object=self.get_object(queryset=self.model.objects.all())
         context['form_text'] = VersionedUpdateTextForm(instance=self.object.current)
         return context
+
+class PaginatedDetailView(DetailView):
+    inline_model=None
+    object_per_page=25
+    context_object_inline_name = "object_inline_list"
+
+    def get_context_data(self,**kwargs):
+        context = super(PaginatedDetailView, self).get_context_data(**kwargs)
+        obj=kwargs["object"]
+        if not hasattr(obj,"inline_paginator"): return context
+        paginator=obj.inline_paginator(self.inline_model,self.object_per_page)
+        if not paginator: return context
+        if self.kwargs.has_key("page_id"):
+            page_id=self.kwargs["page_id"]
+        else:
+            page_id=1
+        try:
+            object_page = paginator.page(page_id)
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            object_page = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            object_page = paginator.page(paginator.num_pages)
+        context[self.context_object_inline_name]=object_page
+        return context
+
 
