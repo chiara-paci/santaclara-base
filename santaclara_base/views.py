@@ -587,14 +587,8 @@ class VersionedUpdateView(UpdateView):
 
 class PaginatedListView(ListView):
     object_per_page=25
-
-    # def get_template_names(self):
-    #     L=super(PaginatedListView, self).get_template_names()
-    #     if not L:
-    #         app_name=unicode(self.model._meta.app_label).lower()
-    #         model_name=unicode(self.model.__class__.__name__).lower()
-    #         L.append(app_name+"/"+model_name+"_list.html")
-    #     return(L)
+    object_list_url=""
+    object_list_url_context_name="object_list_url"
 
     def get_context_data(self,**kwargs):
         context = super(PaginatedListView, self).get_context_data(**kwargs)
@@ -612,6 +606,7 @@ class PaginatedListView(ListView):
         except EmptyPage:
             object_page = paginator.page(paginator.num_pages)
         context[self.context_object_name]=object_page
+        context[self.object_list_url_context_name]=self.object_list_url
         return context
 
 class PaginatedDetailView(DetailView):
