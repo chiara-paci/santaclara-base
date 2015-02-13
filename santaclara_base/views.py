@@ -590,7 +590,7 @@ class PaginatedListView(ListView):
 
     def get_queryset(self):
         qset=ListView.get_queryset(self)
-        paginator = Paginator(qset,object_per_page)
+        paginator = Paginator(qset,self.object_per_page)
         if not paginator: return qset
         if self.kwargs.has_key("page_id"):
             page_id=self.kwargs["page_id"]
