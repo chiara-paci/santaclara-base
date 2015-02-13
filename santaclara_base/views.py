@@ -588,6 +588,10 @@ class VersionedUpdateView(UpdateView):
 class PaginatedListView(ListView):
     object_per_page=25
 
+    def get_template_names(self):
+        L=super(PaginatedListView, self).get_template_names()
+        return(L)
+
     def get_queryset(self):
         qset=ListView.get_queryset(self)
         paginator = Paginator(qset,self.object_per_page)
