@@ -585,6 +585,25 @@ class VersionedUpdateView(UpdateView):
         context['form_text'] = VersionedUpdateTextForm(instance=self.object.current)
         return context
 
+class PaginatedListView(ListView):
+    object_per_page=25
+
+    def get_queryset(self):
+        qset=ListView.get_queryset(self)
+        paginator = Paginator(qset,object_per_page)
+        if not paginator: return qset
+        if self.kwargs.has_key("page_id"):
+            page_id=self.kwargs["page_id"]
+        else:
+            page_id=1
+        try:
+            object_page = paginator.page(page_id)
+        except PageNotAnInteger:
+            object_page = paginator.page(1)
+        except EmptyPage:
+            object_page = paginator.page(paginator.num_pages)
+        return object_page
+
 class PaginatedDetailView(DetailView):
     inline_model=None
     object_per_page=25
