@@ -67,8 +67,14 @@ class DefaultUrl(object):
 
 class PositionAbstract(models.Model): 
     pos = models.PositiveIntegerField()
+
     class Meta:
         abstract = True
+
+    def __init__(self,*args,**kwargs):
+        super(PositionAbstract, self).__init__(*args, **kwargs)
+        self.__original_pos = self.pos
+        
 
 def position_rel_factory(father_class,child_class,father_is_root=False):
     father_class_name=father_class.__name__.lower()
