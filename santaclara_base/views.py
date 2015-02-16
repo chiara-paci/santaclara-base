@@ -614,6 +614,9 @@ class PaginatedDetailView(DetailView):
     object_per_page=25
     context_object_inline_name = "object_inline_list"
 
+    def get_inline_model(self):
+        return self.inline_model
+
     def get_context_data(self,**kwargs):
         context = super(PaginatedDetailView, self).get_context_data(**kwargs)
         obj=kwargs["object"]
