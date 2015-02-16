@@ -676,6 +676,12 @@ class ConcreteSubclassableAbstract(models.Model):
         else:
             return attr
 
+    def get_absolute_url(self): 
+        u=santaclara_base.utility.slugify(unicode(self))
+        app_name=self.actual_class.app_label
+        model_name=self.actual_class.model
+        return self._prefer_actual("get_absolute_url",u"/%s/%s/%d-%s/" % (app_name,model_name,self.id,u))
+
 ### idee
 
 # class ActionLog(models.Model):
