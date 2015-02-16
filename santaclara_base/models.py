@@ -14,6 +14,8 @@ from santaclara_base.taggability import taggator,DisableTagTaggator,AllowForOwne
 
 import santaclara_base.settings as settings
 
+from santaclara_base.signals import position_changed
+
 import santaclara_base.utility
 
 # Create your models here.
@@ -74,7 +76,11 @@ class PositionAbstract(models.Model):
     def __init__(self,*args,**kwargs):
         super(PositionAbstract, self).__init__(*args, **kwargs)
         self.__original_pos = self.pos
-        
+
+    def save(self,*args,**kwargs):
+        super(PositionAbstract,self).save(*args,**kwargs)
+        if self.__original_pos!=self.pos:
+            position_changed.send(self.__class__)
 
 def position_rel_factory(father_class,child_class,father_is_root=False):
     father_class_name=father_class.__name__.lower()
