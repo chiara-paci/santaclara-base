@@ -615,12 +615,13 @@ class PaginatedDetailView(DetailView):
     context_object_inline_name = "object_inline_list"
 
     def get_paginator(self,obj):
+        print "Q",obj
+        if not hasattr(obj,"inline_paginator"): return None
         return obj.inline_paginator(self.inline_model,self.object_per_page)
 
     def get_context_data(self,**kwargs):
         context = super(PaginatedDetailView, self).get_context_data(**kwargs)
         obj=kwargs["object"]
-        if not hasattr(obj,"inline_paginator"): return context
         paginator=self.get_paginator(obj)
         if not paginator: return context
         if self.kwargs.has_key("page_id"):
