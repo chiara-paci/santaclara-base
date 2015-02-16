@@ -80,7 +80,7 @@ class PositionAbstract(models.Model):
     def save(self,*args,**kwargs):
         super(PositionAbstract,self).save(*args,**kwargs)
         if self.__original_pos!=self.pos:
-            position_changed.send(self.__class__)
+            position_changed.send(self.__class__,instance=self)
 
 def position_rel_factory(father_class,child_class,father_is_root=False):
     father_class_name=father_class.__name__.lower()
@@ -349,6 +349,11 @@ class Comment(TimestampAbstract,LocatedAbstract,DefaultUrl):
         S="created by "+unicode(self.created_by)+" "+unicode(self.created)
         S+=", modified by "+unicode(self.modified_by)+" "+unicode(self.last_modified)
         return S
+
+
+## regole da  verificare: ogni volta che un  versionedabstract e/o una
+## version di un  versionedabstract cambiano, devono essere aggiornati
+## il last_modified e il current
 
 class VersionedAbstract(models.Model):
     versions = generic.GenericRelation(Version)
