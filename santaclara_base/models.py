@@ -75,12 +75,18 @@ class PositionAbstract(models.Model):
 
     def __init__(self,*args,**kwargs):
         super(PositionAbstract, self).__init__(*args, **kwargs)
-        self.__original_pos = self.pos
+        self.my_action_post_init(*args,**kwargs)
 
     def save(self,*args,**kwargs):
         super(PositionAbstract,self).save(*args,**kwargs)
+        self.my_action_post_save(*args,**kwargs)
+
+    def my_action_post_save(self,*args,**kwargs):
         if self.__original_pos!=self.pos:
             position_changed.send(self.__class__,instance=self)
+        
+    def my_action_post_init(self,*args,**kwargs):
+        self.__original_pos = self.pos
 
 def position_rel_factory(father_class,child_class,father_is_root=False):
     father_class_name=father_class.__name__.lower()
@@ -536,6 +542,9 @@ class NameFormat(LabeledAbstract):
 
     def save(self, *args, **kwargs):
         super(NameFormat, self).save(*args, **kwargs)
+        self.my_action_post_save(*args,**kwargs)
+            
+    def my_action_post_save(self, *args, **kwargs):
         for coll in self.long_format_set.all():
             coll.save()
         for coll in self.short_format_set.all():
@@ -555,6 +564,9 @@ class NameFormatCollection(LabeledAbstract):
 
     def save(self, *args, **kwargs):
         super(NameFormatCollection, self).save(*args, **kwargs)
+        self.my_action_post_save(*args,**kwargs)
+            
+    def my_action_post_save(self, *args, **kwargs):
         for character in self.character_set.all():
             character.update_cache()
 
@@ -677,9 +689,12 @@ class ConcreteSubclassableAbstract(models.Model):
         if model==mymodel: return self
         return self.__getattribute__(model)
 
-    def save(self, *args, **kwargs):
+    def my_action_pre_save(self, *args, **kwargs):
         if not self.id:
             self.actual_class = ContentType.objects.get_for_model(self.__class__)
+
+    def save(self, *args, **kwargs):
+        self.my_action_pre_save(*args,**kwargs)
         super(ConcreteSubclassableAbstract, self).save(*args, **kwargs)
 
     def _prefer_actual(self,attr_name,default):
