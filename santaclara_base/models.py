@@ -298,6 +298,27 @@ def version_valid_changed_handler(sender,instance,**kwargs):
         instance.content_object.current.is_current=True
         instance.content_object.current.save()
 
+def version_pre_delete_handler(sender,instance,using,**kwargs):
+    if not issubclass(instance.content_object.__class__,VersionedAbstract):
+        print "NOT",instance.content_object.__class__
+        return
+    if not instance.is_current: return
+    if instance.content_object.versions.all().filter(valid=True).count() >= 2:
+        instance.valid=False
+        instance.save()
+        return
+    if instance.content_object.versions.all().count() >= 2:
+        for version in instance.content_object.versions.all().order_by("-last_modified"):
+            if version.id==instance.id: continue
+            version.valid=True
+            version.save()
+            instance.valid=False
+            instance.save()
+            return
+    empty=Version.objects.get(id=0)
+    instance.content_object.current=empty
+    instance.content_object.save()
+
 def version_post_save_handler(sender,instance,created,raw,using,update_fields,**kwargs): 
     if not issubclass(instance.content_object.__class__,VersionedAbstract):
         print "NOT",instance.content_object.__class__
@@ -311,6 +332,7 @@ def version_post_save_handler(sender,instance,created,raw,using,update_fields,**
         instance.save()
 
 post_save.connect(version_post_save_handler,Version)
+pre_delete.connect(version_pre_delete_handler,Version)
 valid_changed.connect(version_valid_changed_handler,Version)
 
 class VersionedAbstract(TimestampAbstract):
