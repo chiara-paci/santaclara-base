@@ -29,7 +29,7 @@ admin.site.register(Version,VersionAdmin)
 class VersionInline(generic.GenericStackedInline):
     model = Version
     extra = 0
-    ordering = [ '-last_modified' ]
+    ordering = [ '-valid','-last_modified' ]
     form = VersionAdminForm
 
 admin.site.register(Annotation,TimestampAdmin)

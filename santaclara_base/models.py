@@ -6,7 +6,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.utils.html import format_html
 from django.utils.safestring import SafeUnicode
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save,pre_delete
 
 from django.db.models import Max
 
