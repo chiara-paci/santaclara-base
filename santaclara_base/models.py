@@ -14,7 +14,7 @@ from santaclara_base.taggability import taggator,DisableTagTaggator,AllowForOwne
 
 import santaclara_base.settings as settings
 
-from santaclara_base.signals import position_changed
+from santaclara_base.signals import position_changed,valid_changed
 
 import santaclara_base.utility
 
@@ -243,6 +243,16 @@ class Version(TimestampAbstract,DefaultUrl):
     class Meta:
         ordering = [ 'id' ]
 
+    def __init__(self,*args,**kwargs):
+        TimestampAbstract.__init__(self,*args,**kwargs)
+        self.__original_valid=self.valid
+        self.__creating_object=not bool(self.pk)
+
+    def save(self,*args,**kwargs):
+        TimestampAbstract.save(self,*args,**kwargs)
+        if self.__original_valid != self.valid:
+            valid_changed.send(self.__class__,instance=self)
+
     def __unicode__(self): 
         #S="created by "+unicode(self.created_by)+" "+unicode(self.created)
         #S+=", modified by "+unicode(self.modified_by)+" "+unicode(self.last_modified)
@@ -361,7 +371,7 @@ class Comment(TimestampAbstract,LocatedAbstract,DefaultUrl):
 ## version di un  versionedabstract cambiano, devono essere aggiornati
 ## il last_modified e il current
 
-class VersionedAbstract(models.Model):
+class VersionedAbstract(TimestampAbstract):
     versions = generic.GenericRelation(Version)
     current = models.ForeignKey(Version,editable=False,default=0,
                                 related_name="%(app_label)s_%(class)s_current_set")
@@ -371,88 +381,93 @@ class VersionedAbstract(models.Model):
     def text(self):
         return self.current.text
 
-    def save(self, *args, **kwargs):
+    def save(self,*args,**kwargs):
         models.Model.save(self, *args, **kwargs)
-        qset=self.versions.order_by('-created')
-        if not qset: return
-        selected=False
-        for v in qset:
-            if selected:
-                v.is_current=False
-                v.save()
-                continue
-            if not v.valid:
-                v.is_current=False
-                v.save()
-                continue
-            selected=True
-            if v==self.current:
-                self.current.is_current=True
-                self.current.save()
-                continue
-            v.is_current=True
-            v.save()
-            self.current.is_current=False
-            self.current.save()
-            self.current=v
-        if selected:
-            models.Model.save(self, *args, **kwargs)
-            return
-        for v in qset:
-            v.is_current=False
-            v.save()
-        v=qset[0]
-        v.valid=True
-        v.save()
-        if v==self.current:
-            self.current.is_current=True
-            self.current.save()
-            return
-        self.current.is_current=False
-        self.current.save()
-        self.current=v
-        models.Model.save(self, *args, **kwargs)
+        if not self.versions:
+            pass
 
-    def set_current(self):
-        qset=self.versions.order_by('-last_modified')
-        if not qset: return
-        selected=False
-        for v in qset:
-            if selected:
-                v.is_current=False
-                v.save()
-                continue
-            if not v.valid:
-                v.is_current=False
-                v.save()
-                continue
-            selected=True
-            if v==self.current:
-                self.current.is_current=True
-                self.current.save()
-                continue
-            v.is_current=True
-            v.save()
-            self.current.is_current=False
-            self.current.save()
-            self.current=v
-        if selected:
-            self.save()
-            return
-        for v in qset:
-            v.is_current=False
-            v.save()
-        v=qset[0]
-        v.valid=True
-        v.save()
-        if v==self.current:
-            self.current.is_current=True
-            self.current.save()
-            return
-        self.current.is_current=False
-        self.current.save()
-        self.current=v
-        self.save()
+    # def save(self, *args, **kwargs):
+    #     models.Model.save(self, *args, **kwargs)
+    #     qset=self.versions.order_by('-created')
+    #     if not qset: return
+    #     selected=False
+    #     for v in qset:
+    #         if selected:
+    #             v.is_current=False
+    #             v.save()
+    #             continue
+    #         if not v.valid:
+    #             v.is_current=False
+    #             v.save()
+    #             continue
+    #         selected=True
+    #         if v==self.current:
+    #             self.current.is_current=True
+    #             self.current.save()
+    #             continue
+    #         v.is_current=True
+    #         v.save()
+    #         self.current.is_current=False
+    #         self.current.save()
+    #         self.current=v
+    #     if selected:
+    #         models.Model.save(self, *args, **kwargs)
+    #         return
+    #     for v in qset:
+    #         v.is_current=False
+    #         v.save()
+    #     v=qset[0]
+    #     v.valid=True
+    #     v.save()
+    #     if v==self.current:
+    #         self.current.is_current=True
+    #         self.current.save()
+    #         return
+    #     self.current.is_current=False
+    #     self.current.save()
+    #     self.current=v
+    #     models.Model.save(self, *args, **kwargs)
+
+    def set_current(self): pass
+        # qset=self.versions.order_by('-last_modified')
+        # if not qset: return
+        # selected=False
+        # for v in qset:
+        #     if selected:
+        #         v.is_current=False
+        #         v.save()
+        #         continue
+        #     if not v.valid:
+        #         v.is_current=False
+        #         v.save()
+        #         continue
+        #     selected=True
+        #     if v==self.current:
+        #         self.current.is_current=True
+        #         self.current.save()
+        #         continue
+        #     v.is_current=True
+        #     v.save()
+        #     self.current.is_current=False
+        #     self.current.save()
+        #     self.current=v
+        # if selected:
+        #     self.save()
+        #     return
+        # for v in qset:
+        #     v.is_current=False
+        #     v.save()
+        # v=qset[0]
+        # v.valid=True
+        # v.save()
+        # if v==self.current:
+        #     self.current.is_current=True
+        #     self.current.save()
+        #     return
+        # self.current.is_current=False
+        # self.current.save()
+        # self.current=v
+        # self.save()
 
     def save_text(self,request,text,as_new_version=True):
         if self.current.id==0:
