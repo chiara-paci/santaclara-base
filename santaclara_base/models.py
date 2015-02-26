@@ -67,6 +67,9 @@ class DefaultUrl(object):
     def get_admin_url(self):
         return u"/admin/%s/%s/%s" % (self.app_section(),self.url_section(),self.get_id()) 
 
+####################################
+### Position
+
 class PositionAbstract(models.Model): 
     pos = models.PositiveIntegerField()
 
@@ -208,6 +211,9 @@ def position_rel_factory(father_class,child_class,father_is_root=False):
     setattr(child_class,"pos_append",pos_append)
     setattr(child_class,"full_pos",full_pos)
 
+####################################
+### Timestamp
+
 class TimestampAbstract(models.Model):
     created_by  = models.ForeignKey(User,related_name="%(app_label)s_%(class)s_created_by_set",editable=False)
     modified_by = models.ForeignKey(User,related_name="%(app_label)s_%(class)s_modified_by_set",editable=False)
@@ -222,6 +228,9 @@ class TimestampAbstract(models.Model):
 
     def user(self):
         return self.created_by
+
+####################################
+### Version
 
 class VersionManager(models.Manager):
     def all_valid(self):
@@ -254,8 +263,6 @@ class Version(TimestampAbstract,DefaultUrl):
             valid_changed.send(self.__class__,instance=self)
 
     def __unicode__(self): 
-        #S="created by "+unicode(self.created_by)+" "+unicode(self.created)
-        #S+=", modified by "+unicode(self.modified_by)+" "+unicode(self.last_modified)
         S=unicode(self.content_object)+u" v. "+self.label
         if self.is_current:
             S+=u" (current)"
@@ -275,101 +282,35 @@ class Version(TimestampAbstract,DefaultUrl):
 
 # moderator.register(Version,DisableCommentModerator)
 
-class Location(models.Model):
-    content_type = models.ForeignKey(ContentType)
-    object_id = models.PositiveIntegerField()
-    content_object = generic.GenericForeignKey('content_type','object_id')
-    ip_address = models.GenericIPAddressField(protocol='both',unpack_ipv4=True)
-
-annotator.register(Location,AllowForStaffAnnotator)
-taggator.register(Location,AllowForStaffTaggator)
-
-class Annotation(TimestampAbstract,DefaultUrl):
-    text = models.TextField()
-    content_type = models.ForeignKey(ContentType)
-    object_id = models.PositiveIntegerField()
-    content_object = generic.GenericForeignKey('content_type','object_id')
-
-    def __unicode__(self): 
-        S="created by "+unicode(self.created_by)+" "+unicode(self.created)
-        S+=", modified by "+unicode(self.modified_by)+" "+unicode(self.last_modified)
-        return S
-
-class Tag(models.Model):
-    label = models.CharField(max_length=2048)
-
-    def __unicode__(self): return self.label
-
-    def get_absolute_url(self):
-        return settings.SANTACLARA_BASE_CONTEXT+"/tag/%d-%s/" % (self.id,santaclara_base.utility.slugify(self.label))
-
-annotator.register(Tag,AllowForStaffAnnotator)
-
-class Tagging(TimestampAbstract,DefaultUrl):
-    label = models.ForeignKey(Tag)
-    content_type = models.ForeignKey(ContentType)
-    object_id = models.PositiveIntegerField()
-    content_object = generic.GenericForeignKey('content_type','object_id')
-
-    def __unicode__(self): 
-        return unicode(self.label)
-
-class LocatedAbstract(models.Model):
-    locations = generic.GenericRelation(Location)
-
-    class Meta:
-        abstract = True
-
-    def save_ip_addresses(self,request):
-        ips=santaclara_base.utility.get_request_ips(request)
-        my_ct=ContentType.objects.get_for_model(self.__class__)
-        for ip in ips:
-            (obj,created)=Location.objects.get_or_create(content_type=my_ct,object_id=self.id,ip_address=ip)
-    
-    def ip_address(self):
-        if not self.locations: return "none"
-        t=[]
-        for adr in self.locations.all():
-            t.append(unicode(adr.ip_address))
-        S=u", ".join(t)
-        return S
-
-class CommentManager(models.Manager):
-    def all_public(self):
-        return self.all().filter(is_public=True).filter(is_removed=False)
-
-    def all_by_model(self,app_name,model_name):
-        return self.all().filter(content_type__app_label=app_name,content_type__model=model_name)
-
-    def order_by_last_modified(self):
-        return self.order_by('last_modified')
-
-    def all_by_object(self,content_type_id,object_id):
-        return self.all().filter(content_type__id=content_type_id,object_id=object_id)
-
-class Comment(TimestampAbstract,LocatedAbstract,DefaultUrl):
-    text = models.TextField()
-    is_public = models.BooleanField(default=True)
-    is_removed = models.BooleanField(default=False)
-    content_type = models.ForeignKey(ContentType)
-    object_id = models.PositiveIntegerField()
-    content_object = generic.GenericForeignKey('content_type','object_id')
-    objects = CommentManager()
-
-    class Meta:
-        permissions = (
-            ("can_moderate", "Can moderate comments"),
-            )
-
-    def __unicode__(self): 
-        S="created by "+unicode(self.created_by)+" "+unicode(self.created)
-        S+=", modified by "+unicode(self.modified_by)+" "+unicode(self.last_modified)
-        return S
-
-
 ## regole da  verificare: ogni volta che un  versionedabstract e/o una
 ## version di un  versionedabstract cambiano, devono essere aggiornati
 ## il last_modified e il current
+
+def version_valid_changed_handler(sender,instance,**kwargs):
+    if not issubclass(instance.content_object.__class__,VersionedAbstract):
+        print "NOT",instance.content_object.__class__
+        return
+    last_valid=instance.content_object.versions.all().filter(valid=True).order_by("last_modified").last()
+    instance.content_object.current=last_valid
+    instance.content_object.save()
+    if not instance.content_object.current.is_current:
+        instance.content_object.current.is_current=True
+        instance.content_object.current.save()
+
+def version_post_save_handler(sender,instance,created,raw,using,update_fields,**kwargs): 
+    if not issubclass(instance.content_object.__class__,VersionedAbstract):
+        print "NOT",instance.content_object.__class__
+        return
+    if not created: return
+    if not instance.valid: return
+    instance.content_object.current=instance
+    instance.content_object.save()
+    if not instance.is_current:
+        instance.is_current=True
+        instance.save()
+
+post_save.connect(version_post_save_handler,Version)
+valid_changed.connect(version_valid_changed_handler,Version)
 
 class VersionedAbstract(TimestampAbstract):
     versions = generic.GenericRelation(Version)
@@ -379,12 +320,50 @@ class VersionedAbstract(TimestampAbstract):
         abstract = True
 
     def text(self):
+        if self.current.id==0: return ""
         return self.current.text
 
-    def save(self,*args,**kwargs):
-        models.Model.save(self, *args, **kwargs)
-        if not self.versions:
-            pass
+    def save_text(self,request,text,as_new_version=True):
+        if self.current.id==0:
+            as_new_version=True
+        if as_new_version:
+            v = Version(content_object=self,created_by=request.user,
+                        modified_by=request.user,is_current=True,
+                        valid=True,text=text )
+            v.save()
+            return
+        self.current.text = text
+        self.current.modified_by = request.user
+        self.current.save()
+
+    def count_characters(self):
+        if self.current.id==0: return 0
+        return self.current.count_characters()
+
+    def count_words(self):
+        if self.current.id==0: return 0
+        return self.current.count_words()
+
+    def count_versions(self):
+        return self.versions.count()
+
+    def version_number(self):
+        return self.current.label
+
+    def last_modified(self):
+        return self.current.last_modified
+
+    # def save(self,*args,**kwargs):
+    #     TimestampAbstract.save(self, *args, **kwargs)
+    #     if not self.versions:
+    #         v = Version(content_object=self,created_by=self.created_by,
+    #                     modified_by=self.created_by,is_current=False,
+    #                     valid=True,text="(empty)" )
+    #         v.save()
+    #         self.current=v
+    #         models.Model.save(self, *args, **kwargs)
+    #         v.is_current=True
+    #         v.save()
 
     # def save(self, *args, **kwargs):
     #     models.Model.save(self, *args, **kwargs)
@@ -428,7 +407,7 @@ class VersionedAbstract(TimestampAbstract):
     #     self.current=v
     #     models.Model.save(self, *args, **kwargs)
 
-    def set_current(self): pass
+    #    def set_current(self): pass
         # qset=self.versions.order_by('-last_modified')
         # if not qset: return
         # selected=False
@@ -469,39 +448,112 @@ class VersionedAbstract(TimestampAbstract):
         # self.current=v
         # self.save()
 
-    def save_text(self,request,text,as_new_version=True):
-        if self.current.id==0:
-            as_new_version=True
-        if as_new_version:
-            v = Version(content_object=self,created_by=request.user,
-                        modified_by=request.user,is_current=True,
-                        valid=True,text=text )
-            v.save()
-            self.current.is_current=False
-            self.current.save()
-            self.current=v
-            self.save()
-            return
-        self.current.text = text
-        self.current.modified_by = request.user
-        self.current.save()
 
-    def count_characters(self):
-        if self.current.id==0: return 0
-        return self.current.count_characters()
+####################################
+### Location
 
-    def count_words(self):
-        if self.current.id==0: return 0
-        return self.current.count_words()
+class Location(models.Model):
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField()
+    content_object = generic.GenericForeignKey('content_type','object_id')
+    ip_address = models.GenericIPAddressField(protocol='both',unpack_ipv4=True)
 
-    def count_versions(self):
-        return self.versions.count()
+annotator.register(Location,AllowForStaffAnnotator)
+taggator.register(Location,AllowForStaffTaggator)
 
-    def version_number(self):
-        return self.current.label
+class LocatedAbstract(models.Model):
+    locations = generic.GenericRelation(Location)
 
-    def last_modified(self):
-        return self.current.last_modified
+    class Meta:
+        abstract = True
+
+    def save_ip_addresses(self,request):
+        ips=santaclara_base.utility.get_request_ips(request)
+        my_ct=ContentType.objects.get_for_model(self.__class__)
+        for ip in ips:
+            (obj,created)=Location.objects.get_or_create(content_type=my_ct,object_id=self.id,ip_address=ip)
+    
+    def ip_address(self):
+        if not self.locations: return "none"
+        t=[]
+        for adr in self.locations.all():
+            t.append(unicode(adr.ip_address))
+        S=u", ".join(t)
+        return S
+
+####################################
+### Annotation
+
+class Annotation(TimestampAbstract,DefaultUrl):
+    text = models.TextField()
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField()
+    content_object = generic.GenericForeignKey('content_type','object_id')
+
+    def __unicode__(self): 
+        S="created by "+unicode(self.created_by)+" "+unicode(self.created)
+        S+=", modified by "+unicode(self.modified_by)+" "+unicode(self.last_modified)
+        return S
+
+####################################
+### Tag
+
+class Tag(models.Model):
+    label = models.CharField(max_length=2048)
+
+    def __unicode__(self): return self.label
+
+    def get_absolute_url(self):
+        return settings.SANTACLARA_BASE_CONTEXT+"/tag/%d-%s/" % (self.id,santaclara_base.utility.slugify(self.label))
+
+annotator.register(Tag,AllowForStaffAnnotator)
+
+class Tagging(TimestampAbstract,DefaultUrl):
+    label = models.ForeignKey(Tag)
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField()
+    content_object = generic.GenericForeignKey('content_type','object_id')
+
+    def __unicode__(self): 
+        return unicode(self.label)
+
+####################################
+### Comment
+
+class CommentManager(models.Manager):
+    def all_public(self):
+        return self.all().filter(is_public=True).filter(is_removed=False)
+
+    def all_by_model(self,app_name,model_name):
+        return self.all().filter(content_type__app_label=app_name,content_type__model=model_name)
+
+    def order_by_last_modified(self):
+        return self.order_by('last_modified')
+
+    def all_by_object(self,content_type_id,object_id):
+        return self.all().filter(content_type__id=content_type_id,object_id=object_id)
+
+class Comment(TimestampAbstract,LocatedAbstract,DefaultUrl):
+    text = models.TextField()
+    is_public = models.BooleanField(default=True)
+    is_removed = models.BooleanField(default=False)
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField()
+    content_object = generic.GenericForeignKey('content_type','object_id')
+    objects = CommentManager()
+
+    class Meta:
+        permissions = (
+            ("can_moderate", "Can moderate comments"),
+            )
+
+    def __unicode__(self): 
+        S="created by "+unicode(self.created_by)+" "+unicode(self.created)
+        S+=", modified by "+unicode(self.modified_by)+" "+unicode(self.last_modified)
+        return S
+
+####################################
+### DisplayProperty
 
 class DisplayPropertyName(models.Model):
     name = models.CharField(max_length=2048)
@@ -531,7 +583,8 @@ class DisplayedAbstract(models.Model):
     class Meta:
         abstract = True
 
-###
+####################################
+### NameFormat
 
 RE_NAME_SEP=re.compile("('| |-)")
 
@@ -675,6 +728,9 @@ class NameFormatCollection(LabeledAbstract):
 
         return long_name,short_name,list_name,ordering_name
 
+####################################
+### Icon
+
 class IconFamily(models.Model):
     name = models.CharField(max_length=2048)
 
@@ -691,6 +747,9 @@ class Icon(models.Model):
 
     class Meta:
         ordering = [ "id" ]
+
+####################################
+### ConcreteSubclassable
 
 class ConcreteSubclassableAbstract(models.Model):
     actual_class = models.ForeignKey(ContentType,related_name='+',editable=False)
