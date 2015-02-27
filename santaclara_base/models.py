@@ -304,17 +304,15 @@ def version_pre_delete_handler(sender,instance,using,**kwargs):
         return
     if not instance.is_current: return
     if instance.content_object.versions.all().filter(valid=True).count() >= 2:
-        instance.valid=False
-        instance.save()
+        last_valid=instance.content_object.versions.filter(valid=True).exclude(id=instance.id).order_by("last_modified").last()
+        instance.content_object.current=last_valid
+        instance.content_object.save()
         return
     if instance.content_object.versions.all().count() >= 2:
-        for version in instance.content_object.versions.all().order_by("-last_modified"):
-            if version.id==instance.id: continue
-            version.valid=True
-            version.save()
-            instance.valid=False
-            instance.save()
-            return
+        last_valid=instance.content_object.versions.exclude(id=instance.id).order_by("last_modified").last()
+        instance.content_object.current=last_valid
+        instance.content_object.save()
+        return
     empty=Version.objects.get(id=0)
     instance.content_object.current=empty
     instance.content_object.save()
