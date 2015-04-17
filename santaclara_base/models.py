@@ -3,7 +3,8 @@
 from django.db import models
 from django.contrib.auth.models import User,Permission
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes import generic
+from django.contrib.contenttypes.fields import GenericForeignKey,GenericRelation
+#from django.contrib.contenttypes import generic
 from django.utils.html import format_html
 from django.utils.safestring import SafeUnicode
 from django.db.models.signals import post_save,pre_delete
@@ -249,7 +250,7 @@ class Version(TimestampAbstract,DefaultUrl):
     is_current = models.BooleanField(default=False,editable=False)
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
-    content_object = generic.GenericForeignKey('content_type','object_id')
+    content_object = GenericForeignKey('content_type','object_id')
     objects = VersionManager()
 
     class Meta:
@@ -336,7 +337,7 @@ pre_delete.connect(version_pre_delete_handler,Version)
 valid_changed.connect(version_valid_changed_handler,Version)
 
 class VersionedAbstract(TimestampAbstract):
-    versions = generic.GenericRelation(Version)
+    versions = GenericRelation(Version)
     current = models.ForeignKey(Version,editable=False,default=0,
                                 related_name="%(app_label)s_%(class)s_current_set")
     class Meta:
@@ -478,14 +479,14 @@ class VersionedAbstract(TimestampAbstract):
 class Location(models.Model):
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
-    content_object = generic.GenericForeignKey('content_type','object_id')
+    content_object = GenericForeignKey('content_type','object_id')
     ip_address = models.GenericIPAddressField(protocol='both',unpack_ipv4=True)
 
 annotator.register(Location,AllowForStaffAnnotator)
 taggator.register(Location,AllowForStaffTaggator)
 
 class LocatedAbstract(models.Model):
-    locations = generic.GenericRelation(Location)
+    locations = GenericRelation(Location)
 
     class Meta:
         abstract = True
@@ -511,7 +512,7 @@ class Annotation(TimestampAbstract,DefaultUrl):
     text = models.TextField()
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
-    content_object = generic.GenericForeignKey('content_type','object_id')
+    content_object = GenericForeignKey('content_type','object_id')
 
     def __unicode__(self): 
         S="created by "+unicode(self.created_by)+" "+unicode(self.created)
@@ -535,7 +536,7 @@ class Tagging(TimestampAbstract,DefaultUrl):
     label = models.ForeignKey(Tag)
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
-    content_object = generic.GenericForeignKey('content_type','object_id')
+    content_object = GenericForeignKey('content_type','object_id')
 
     def __unicode__(self): 
         return unicode(self.label)
@@ -562,7 +563,7 @@ class Comment(TimestampAbstract,LocatedAbstract,DefaultUrl):
     is_removed = models.BooleanField(default=False)
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
-    content_object = generic.GenericForeignKey('content_type','object_id')
+    content_object = GenericForeignKey('content_type','object_id')
     objects = CommentManager()
 
     class Meta:
@@ -593,7 +594,7 @@ class DisplayPropertyList(models.Model):
     user = models.ForeignKey(User)
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
-    content_object = generic.GenericForeignKey('content_type','object_id')
+    content_object = GenericForeignKey('content_type','object_id')
 
 class DisplayProperty(models.Model):
     list = models.ForeignKey(DisplayPropertyList)
@@ -601,7 +602,7 @@ class DisplayProperty(models.Model):
     value = models.CharField(max_length=2048)
 
 class DisplayedAbstract(models.Model):
-    property_lists = generic.GenericRelation(DisplayPropertyList)
+    property_lists = GenericRelation(DisplayPropertyList)
 
     class Meta:
         abstract = True
@@ -816,7 +817,7 @@ class ConcreteSubclassableAbstract(models.Model):
 # class ActionLog(models.Model):
 #     content_type = models.ForeignKey(ContentType)
 #     object_id = models.PositiveIntegerField()
-#     content_object = generic.GenericForeignKey('content_type','object_id')
+#     content_object = GenericForeignKey('content_type','object_id')
 #     timestamp = models.DateTimeField(auto_now_add=True)
 #     user = models.ForeignKey(User)
 #     permission = models.ForeignKey(Permission)
