@@ -97,10 +97,12 @@ def position_rel_factory(father_class,child_class,father_is_root=False):
     child_class_name=child_class.__name__.lower()
 
     foreign_keys = []
-    for field in child_class._meta.fields:
-        if isinstance(child_class._meta.get_field_by_name(field.name)[0], models.ForeignKey):
-            if field.rel.to == father_class:
-                foreign_keys.append(field.name)
+
+    for field in child_class._meta.get_fields(include_parents=True):
+        if not field.is_relation: continue
+        if not field.many_to_one: continue
+        if field.related_model == father_class:
+            foreign_keys.append(field.name)
     if not foreign_keys:
         raise Exception("%s has no ForeignKey to %s",child_class,father_class)
 

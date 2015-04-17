@@ -452,10 +452,11 @@ class JsonAddChildView(JsonUpdateFormView):
     
     def get_post_form(self,request):
         foreign_keys = []
-        for field in self.child_model._meta.fields:
-            if isinstance(self.child_model._meta.get_field_by_name(field.name)[0], models.ForeignKey):
-                if field.rel.to == self.model:
-                    foreign_keys.append(field.name)
+        for field in self.child_model._meta.get_fields(include_parents=True):
+            if not field.is_relation: continue
+            if not field.many_to_one: continue
+            if field.related_model == self.model:
+                foreign_keys.append(field.name)
         if not foreign_keys:
             raise Exception("%s has no ForeignKey to %s",self.child_model,self.model)
         if len(foreign_keys)>1:

@@ -1,4 +1,4 @@
-from django.db.models.signals import post_syncdb
+from django.db.models.signals import post_migrate
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import Permission
  
@@ -17,4 +17,4 @@ def add_view_permissions(sender, **kwargs):
             print "Added view permission for %s" % content_type.name
             
 # check for all our view permissions after a syncdb
-post_syncdb.connect(add_view_permissions)
+post_migrate.connect(add_view_permissions)
