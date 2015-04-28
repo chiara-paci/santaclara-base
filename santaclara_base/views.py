@@ -621,7 +621,8 @@ class PaginatedDetailView(DetailView):
 
     def get_context_data(self,**kwargs):
         context = super(PaginatedDetailView, self).get_context_data(**kwargs)
-        obj=kwargs["object"]
+        #obj=kwargs["object"]
+        obj=self.get_object()
         paginator=self.get_paginator(obj)
         if not paginator: return context
         if self.kwargs.has_key("page_id"):
