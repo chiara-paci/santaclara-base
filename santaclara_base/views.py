@@ -467,6 +467,7 @@ class JsonAddChildView(JsonUpdateFormView):
             queryset=self.model.objects.by_user(request.user)
         else:
             queryset=self.model.objects.all()
+
         self.object = self.get_object(queryset=queryset)
         form=self.form_class(request.POST)
         setattr(form.instance,parent_field,self.object)
@@ -489,11 +490,12 @@ class JsonAddChildView(JsonUpdateFormView):
         return { self.context_object_child_name: child }
 
 class JsonPositionedInsertView(JsonUpdateFormView): 
-    template_name_json_response = "books/object_insert_response.json"
+    template_name_json_response = "object_insert_response.json"
     parent_model = None
     context_object_parent_name = "parent"
     context_object_siblings_name = "siblings"
     parent_filtered_by_user = False
+    filtered_by_user = False
 
     def get_post_form(self,request):
         if self.parent_filtered_by_user:
@@ -507,7 +509,10 @@ class JsonPositionedInsertView(JsonUpdateFormView):
         return form
 
     def post_form_is_valid(self,request,form):
-        self.object = self.get_object(queryset=self.model.objects.by_user(request.user))
+        if self.filtered_by_user:
+            self.object = self.get_object(queryset=self.model.objects.by_user(request.user))
+        else:
+            self.object = self.get_object(queryset=self.model.objects.all())
         parent=form.cleaned_data["parent"]
         before=form.cleaned_data["before"]
         self.object.pos_insert(parent,before)
@@ -518,11 +523,12 @@ class JsonPositionedInsertView(JsonUpdateFormView):
             }
 
 class JsonPositionedAppendView(JsonUpdateFormView): 
-    template_name_json_response = "books/object_insert_response.json"
+    template_name_json_response = "object_insert_response.json"
     parent_model = None
     context_object_parent_name = "parent"
     context_object_siblings_name = "siblings"
     parent_filtered_by_user = False
+    filtered_by_user = False
 
     def get_post_form(self,request):
         if self.parent_filtered_by_user:
@@ -535,7 +541,10 @@ class JsonPositionedAppendView(JsonUpdateFormView):
         return form
 
     def post_form_is_valid(self,request,form):
-        self.object = self.get_object(queryset=self.model.objects.by_user(request.user))
+        if self.filtered_by_user:
+            self.object = self.get_object(queryset=self.model.objects.by_user(request.user))
+        else:
+            self.object = self.get_object(queryset=self.model.objects.all())
         parent=form.cleaned_data["parent"]
         self.object.pos_append(parent)
         f=getattr(parent,"siblings_"+self.model.__name__.lower())

@@ -89,6 +89,7 @@ class PositionAbstract(models.Model):
     def my_action_post_save(self,*args,**kwargs):
         if self.__original_pos!=self.pos:
             position_changed.send(self.__class__,instance=self)
+            self.__original_pos = self.pos
         
     def my_action_post_init(self,*args,**kwargs):
         self.__original_pos = self.pos
