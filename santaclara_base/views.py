@@ -517,6 +517,7 @@ class JsonPositionedInsertView(JsonUpdateFormView):
         before=form.cleaned_data["before"]
         self.object.pos_insert(parent,before)
         f=getattr(parent,"siblings_"+self.model.__name__.lower())
+        ret={ self.context_object_siblings_name: f() }
         if hasattr(parent,"full_pos"):
             ret["parent_pos"]=parent.full_pos()
         elif hasattr(parent,"pos"):
