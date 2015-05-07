@@ -517,10 +517,11 @@ class JsonPositionedInsertView(JsonUpdateFormView):
         before=form.cleaned_data["before"]
         self.object.pos_insert(parent,before)
         f=getattr(parent,"siblings_"+self.model.__name__.lower())
-        return {
-            self.context_object_siblings_name: f(), 
-            "parent_pos": parent.full_pos()
-            }
+        if hasattr(parent,"full_pos"):
+            ret["parent_pos"]=parent.full_pos()
+        elif hasattr(parent,"pos"):
+            ret["parent_pos"]=parent.pos
+        return ret
 
 class JsonPositionedAppendView(JsonUpdateFormView): 
     template_name_json_response = "object_insert_response.json"
@@ -548,10 +549,12 @@ class JsonPositionedAppendView(JsonUpdateFormView):
         parent=form.cleaned_data["parent"]
         self.object.pos_append(parent)
         f=getattr(parent,"siblings_"+self.model.__name__.lower())
-        return {
-            self.context_object_siblings_name: f(), 
-            "parent_pos": parent.full_pos()
-            }
+        ret={ self.context_object_siblings_name: f() }
+        if hasattr(parent,"full_pos"):
+            ret["parent_pos"]=parent.full_pos()
+        elif hasattr(parent,"pos"):
+            ret["parent_pos"]=parent.pos
+        return ret
     
 class JsonVersionedSetCurrentView(JsonUpdateFormView): 
     def post(self, request, *args, **kwargs):
