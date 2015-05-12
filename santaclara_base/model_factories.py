@@ -45,10 +45,14 @@ def position_rel_factory(father_class,child_class,father_is_root=False):
         child_set=getattr(self,child_class_name+"_set")
         return child_set.all()
 
-    setattr(father_class,"new_"+child_class_name+"_pos",new_CHILD_pos)
-    setattr(father_class,"shift_"+child_class_name+"_from",shift_CHILD_from)
-    setattr(father_class,"normalize_"+child_class_name+"_pos",normalize_CHILD_pos)
-    setattr(father_class,"siblings_"+child_class_name,siblings_CHILD)
+    father_map=[ ("new_"+child_class_name+"_pos", new_CHILD_pos),
+                 ("shift_"+child_class_name+"_from", shift_CHILD_from),
+                 ("normalize_"+child_class_name+"_pos", normalize_CHILD_pos),
+                 ("siblings_"+child_class_name, siblings_CHILD) ]
+
+    for fname,f in father_map:
+        if not hasattr(father_class,fname):
+            setattr(father_class,fname,f)
 
     if father_is_root or not hasattr(father_class,"pos_previous"):
         def pos_previous(self):
@@ -116,8 +120,13 @@ def position_rel_factory(father_class,child_class,father_is_root=False):
         f_normalize=getattr(parent,"normalize_"+child_class_name+"_pos")
         f_normalize()
 
-    setattr(child_class,"pos_previous",pos_previous)
-    setattr(child_class,"pos_next",pos_next)
-    setattr(child_class,"pos_insert",pos_insert)
-    setattr(child_class,"pos_append",pos_append)
-    setattr(child_class,"full_pos",full_pos)
+    child_map=[ ("pos_previous",pos_previous),
+                ("pos_next",pos_next),
+                ("pos_insert",pos_insert),
+                ("pos_append",pos_append),
+                ("full_pos",full_pos)]
+
+    for fname,f in child_map:
+        if not hasattr(child_class,fname):
+            setattr(child_class,fname,f)
+

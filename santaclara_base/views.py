@@ -129,12 +129,13 @@ class JsonDeleteView(DeleteView):
 
 class JsonCreateView(CreateView):
     template_name_json_response = "santaclara_base/create_response.json"
+    context_object_name="object"
 
     def form_valid(self,form): 
         response = super(JsonCreateView, self).form_valid(form)
         self.object = form.save(commit=True)
         return render(self.request,self.template_name_json_response,
-                      {'object': self.object},
+                      {self.context_object_name: self.object},
                       content_type='application/json')
 
     def form_invalid(self, form):
@@ -392,7 +393,7 @@ class JsonUpdateSingleView(SingleObjectMixin,View):
                       content_type='application/json')
 
     def get_context_data(self, **kwargs):
-        context = super(JsonUpdateFormView, self).get_context_data(**kwargs)
+        context = super(JsonUpdateSingleView, self).get_context_data(**kwargs)
         context[self.context_object_name] = self.object
         return context
 
