@@ -510,6 +510,7 @@ class JsonPositionedInsertView(JsonUpdateFormView):
         return form
 
     def post_form_is_valid(self,request,form):
+        print request.POST
         if self.filtered_by_user:
             self.object = self.get_object(queryset=self.model.objects.by_user(request.user))
         else:
