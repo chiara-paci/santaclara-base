@@ -408,7 +408,7 @@ class Tag(models.Model):
     def __unicode__(self): return self.label
 
     def get_absolute_url(self):
-        return settings.SANTACLARA_BASE_CONTEXT+"/tag/%d-%s/" % (self.id,santaclara_base.utility.slugify(self.label))
+        return settings.SANTACLARA_BASE_CONTEXT+"/tag/%d-%s" % (self.id,santaclara_base.utility.slugify(self.label))
 
 annotator.register(Tag,AllowForStaffAnnotator)
 
@@ -690,7 +690,7 @@ class ConcreteSubclassableAbstract(models.Model):
         u=santaclara_base.utility.slugify(unicode(self))
         app_name=self.actual_class.app_label
         model_name=self.actual_class.model
-        return self._prefer_actual("get_absolute_url",u"/%s/%s/%d-%s/" % (app_name,model_name,self.id,u))
+        return self._prefer_actual("get_absolute_url",u"/%s/%s/%d-%s" % (app_name,model_name,self.id,u))
 
 ### idee
 
