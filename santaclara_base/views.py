@@ -58,6 +58,11 @@ class DeleteToContentObjectView(DeleteView):
 
 class UpdateToContentObjectView(UpdateView): pass
 
+class TimestampUpdateView(UpdateView):
+    def form_valid(self,form): 
+        form.instance.modified_by=self.request.user
+        return super(TimestampUpdateView, self).form_valid(form)
+
 class JsonByUserListView(ByUserListView): 
     def render_to_response(self, context, **kwargs):
         return super(JsonByUserListView, self).render_to_response(context,content_type='application/json', **kwargs)
