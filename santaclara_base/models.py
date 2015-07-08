@@ -113,6 +113,19 @@ class TimestampAbstract(models.Model):
     def user(self):
         return self.created_by
 
+class MiniTimestampAbstract(models.Model):
+    created_by  = models.ForeignKey(User,related_name="%(app_label)s_%(class)s_created_by_set",editable=False)
+    created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        abstract = True
+
+    def submit_date(self):
+        return self.created
+
+    def user(self):
+        return self.created_by
+
 ####################################
 ### Version
 
