@@ -681,7 +681,11 @@ class ConcreteSubclassableAbstract(models.Model):
     def my_action_post_init(self,*args,**kwargs):
         self.__actual = self._actual()
 
-    def actual(self): return self.__actual
+    def actual(self): 
+        if hasattr(self,"__actual"):
+            return self.__actual
+        self.__actual = self._actual()
+        return self.__actual
 
     def _actual(self):
         model = self.actual_class.model
