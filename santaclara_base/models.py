@@ -687,6 +687,10 @@ class ConcreteSubclassableAbstract(models.Model):
     def actual_model(self):
         return unicode(self.actual_class.model)
 
+    @cached_property
+    def actual_app_label(self):
+        return unicode(self.actual_class.app_label)
+
     def my_action_pre_save(self, *args, **kwargs):
         if not self.id:
             self.actual_class = ContentType.objects.get_for_model(self.__class__)
@@ -708,8 +712,8 @@ class ConcreteSubclassableAbstract(models.Model):
 
     def get_absolute_url(self): 
         u=santaclara_base.utility.slugify(unicode(self))
-        app_name=self.actual_class.app_label
-        model_name=self.actual_class.model
+        app_name=self.actual_app_label
+        model_name=self.actual_model
         return self._prefer_actual("get_absolute_url",u"/%s/%s/%d-%s" % (app_name,model_name,self.id,u))
 
 ### idee
