@@ -674,7 +674,16 @@ class ConcreteSubclassableAbstract(models.Model):
     class Meta:
         abstract = True
 
-    def actual(self):
+    def __init__(self,*args,**kwargs):
+        super(ConcreteSubclassableAbstract, self).__init__(*args, **kwargs)
+        self.my_action_post_init(*args,**kwargs)
+
+    def my_action_post_init(self,*args,**kwargs):
+        self.__actual = self._actual()
+
+    def actual(self): return self.__actual
+
+    def _actual(self):
         model = self.actual_class.model
         mymodel = unicode(self.__class__.__name__).lower()
         if model==mymodel: return self
