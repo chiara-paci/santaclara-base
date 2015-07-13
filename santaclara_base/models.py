@@ -692,7 +692,7 @@ class ConcreteSubclassableAbstract(models.Model):
         super(ConcreteSubclassableAbstract, self).save(*args, **kwargs)
 
     def _prefer_actual(self,attr_name,default,*args,**kwargs):
-        obj=self.actual()
+        obj=self.actual
         if not obj: return(default)
         if not hasattr(obj,attr_name): return default
         attr=getattr(obj,attr_name)
@@ -702,7 +702,6 @@ class ConcreteSubclassableAbstract(models.Model):
         else:
             return attr
 
-    @cached_property
     def get_absolute_url(self): 
         u=santaclara_base.utility.slugify(unicode(self))
         app_name=self.actual_class.app_label
