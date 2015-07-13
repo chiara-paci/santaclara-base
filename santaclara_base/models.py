@@ -685,7 +685,7 @@ class ConcreteSubclassableAbstract(models.Model):
 
     @cached_property
     def actual_model(self):
-        return self.actual_class.model
+        return unicode(self.actual_class.model)
 
     def my_action_pre_save(self, *args, **kwargs):
         if not self.id:
