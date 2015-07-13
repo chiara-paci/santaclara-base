@@ -678,10 +678,14 @@ class ConcreteSubclassableAbstract(models.Model):
 
     @cached_property
     def actual(self):
-        model = self.actual_class.model
+        model = self.actual_model
         mymodel = unicode(self.__class__.__name__).lower()
         if model==mymodel: return self
         return self.__getattribute__(model)
+
+    @cached_property
+    def actual_model(self):
+        return self.actual_class.model
 
     def my_action_pre_save(self, *args, **kwargs):
         if not self.id:
