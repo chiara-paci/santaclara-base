@@ -9,6 +9,8 @@ from django.utils.html import format_html
 from django.utils.safestring import SafeUnicode
 from django.db.models.signals import post_save,pre_delete
 
+from django.utils.functional import cached_property
+
 from django.db.models import Max
 
 from santaclara_base.annotability import annotator,DisableAnnotationAnnotator,AllowForOwnerAnnotator,AllowForStaffAnnotator
@@ -674,20 +676,8 @@ class ConcreteSubclassableAbstract(models.Model):
     class Meta:
         abstract = True
 
-    def __init__(self,*args,**kwargs):
-        super(ConcreteSubclassableAbstract, self).__init__(*args, **kwargs)
-        self.my_action_post_init(*args,**kwargs)
-
-    def my_action_post_init(self,*args,**kwargs):
-        self.__actual = self._actual()
-
-    def actual(self): 
-        if hasattr(self,"__actual"):
-            return self.__actual
-        self.__actual = self._actual()
-        return self.__actual
-
-    def _actual(self):
+    @cached_property
+    def actual(self):
         model = self.actual_class.model
         mymodel = unicode(self.__class__.__name__).lower()
         if model==mymodel: return self
@@ -712,6 +702,7 @@ class ConcreteSubclassableAbstract(models.Model):
         else:
             return attr
 
+    @cached_property
     def get_absolute_url(self): 
         u=santaclara_base.utility.slugify(unicode(self))
         app_name=self.actual_class.app_label
