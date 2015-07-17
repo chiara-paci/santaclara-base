@@ -695,10 +695,10 @@ class ConcreteSubclassableAbstract(models.Model):
         return unicode(self.actual_class.app_label)
 
     def my_action_pre_save(self, *args, **kwargs):
-        if not self.id:
-            self.actual_class = ContentType.objects.get_for_model(self.__class__)
-            self.actual_id = self.pk
-            print self.actual_class,self.actual_id,self.actual
+        self.actual_class = ContentType.objects.get_for_model(self.__class__)
+        self.actual_id = self.pk
+        self.actual = self
+        print self.actual_class,self.actual_id,self.actual
 
     def save(self, *args, **kwargs):
         self.my_action_pre_save(*args,**kwargs)
