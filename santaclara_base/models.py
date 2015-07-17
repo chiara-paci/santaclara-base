@@ -680,11 +680,11 @@ class ConcreteSubclassableAbstract(models.Model):
         abstract = True
 
     # @cached_property
-    # def actual(self):
-    #     model = self.actual_model
-    #     mymodel = unicode(self.__class__.__name__).lower()
-    #     if model==mymodel: return self
-    #     return self.__getattribute__(model)
+    def _actual(self):
+        model = self.actual_model
+        mymodel = unicode(self.__class__.__name__).lower()
+        if model==mymodel: return self
+        return self.__getattribute__(model)
 
     @cached_property
     def actual_model(self):
@@ -697,9 +697,7 @@ class ConcreteSubclassableAbstract(models.Model):
     def my_action_pre_save(self, *args, **kwargs):
         if not self.id:
             self.actual_class = ContentType.objects.get_for_model(self.__class__)
-            self.actual_id = self.pk
-            self.actual = self
-            print "SAVE"
+        self.actual = self._actual()
         print self.actual_class,self.actual_id,self.actual
 
     def save(self, *args, **kwargs):
