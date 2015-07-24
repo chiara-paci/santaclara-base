@@ -678,12 +678,17 @@ class ConcreteSubclassableAbstract(models.Model):
     class Meta:
         abstract = True
 
+    def __init__(self,*args,**kwargs):
+        self._actual=None
+        super(ConcreteSubclassableAbstract,self).(*args,**kwargs)
 
     def actual(self):
-        model = self.actual_model
-        mymodel = unicode(self.__class__.__name__).lower()
-        if model==mymodel: return self
-        return self.__getattribute__(model)
+        if not self._actual:
+            model = self.actual_model
+            mymodel = unicode(self.__class__.__name__).lower()
+            if model==mymodel: return self
+            self._actual=self.__getattribute__(model)
+        return self._actual
 
     @cached_property
     def actual_model(self):
