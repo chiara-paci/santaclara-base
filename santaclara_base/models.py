@@ -678,7 +678,7 @@ class ConcreteSubclassableAbstract(models.Model):
     class Meta:
         abstract = True
 
-    @cached_property
+
     def actual(self):
         model = self.actual_model
         mymodel = unicode(self.__class__.__name__).lower()
