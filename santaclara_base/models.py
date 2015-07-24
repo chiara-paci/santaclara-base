@@ -693,7 +693,6 @@ class ConcreteSubclassableAbstract(models.Model):
     def my_action_pre_save(self, *args, **kwargs):
         if not self.id:
             self.actual_class = ContentType.objects.get_for_model(self.__class__)
-        self.actual = self._actual()
 
     def save(self, *args, **kwargs):
         self.my_action_pre_save(*args,**kwargs)
