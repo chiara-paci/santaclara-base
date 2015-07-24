@@ -672,23 +672,15 @@ class Icon(models.Model):
 
 class ConcreteSubclassableAbstract(models.Model):
     actual_class = models.ForeignKey(ContentType,related_name='+',editable=False)
-    # actual_id    = models.PositiveIntegerField(editable=False)
-    # actual       = GenericForeignKey('actual_class','actual_id')
 
     class Meta:
         abstract = True
 
-    def __init__(self,*args,**kwargs):
-        self._actual=None
-        super(ConcreteSubclassableAbstract,self).__init__(*args,**kwargs)
-
     def actual(self):
-        if not self._actual:
-            model = self.actual_model
-            mymodel = unicode(self.__class__.__name__).lower()
-            if model==mymodel: return self
-            self._actual=self.__getattribute__(model)
-        return self._actual
+        model = self.actual_model
+        mymodel = unicode(self.__class__.__name__).lower()
+        if model==mymodel: return self
+        return self.__getattribute__(model)
 
     @cached_property
     def actual_model(self):
