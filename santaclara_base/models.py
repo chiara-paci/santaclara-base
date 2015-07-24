@@ -672,15 +672,14 @@ class Icon(models.Model):
 
 class ConcreteSubclassableAbstract(models.Model):
     actual_class = models.ForeignKey(ContentType,related_name='+',editable=False)
-    actual_id    = models.PositiveIntegerField(editable=False)
-    actual       = GenericForeignKey('actual_class','actual_id')
-
+    # actual_id    = models.PositiveIntegerField(editable=False)
+    # actual       = GenericForeignKey('actual_class','actual_id')
 
     class Meta:
         abstract = True
 
-    # @cached_property
-    def _actual(self):
+    @cached_property
+    def actual(self):
         model = self.actual_model
         mymodel = unicode(self.__class__.__name__).lower()
         if model==mymodel: return self
@@ -698,7 +697,6 @@ class ConcreteSubclassableAbstract(models.Model):
         if not self.id:
             self.actual_class = ContentType.objects.get_for_model(self.__class__)
         self.actual = self._actual()
-        print self.actual_class,self.actual_id,self.actual
 
     def save(self, *args, **kwargs):
         self.my_action_pre_save(*args,**kwargs)
