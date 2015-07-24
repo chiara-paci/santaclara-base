@@ -680,7 +680,7 @@ class ConcreteSubclassableAbstract(models.Model):
 
     def __init__(self,*args,**kwargs):
         self._actual=None
-        super(ConcreteSubclassableAbstract,self).(*args,**kwargs)
+        super(ConcreteSubclassableAbstract,self).__init__(*args,**kwargs)
 
     def actual(self):
         if not self._actual:
