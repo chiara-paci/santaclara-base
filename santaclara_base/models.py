@@ -699,11 +699,14 @@ class ConcreteSubclassableAbstract(models.Model):
         super(ConcreteSubclassableAbstract, self).save(*args, **kwargs)
 
     def _prefer_actual(self,attr_name,default,*args,**kwargs):
+        def f():
+            if callable(default): return default()
+            return default
         obj=self.actual
-        if not obj: return(default)
-        if not hasattr(obj,attr_name): return default
+        if not obj: return(f(default))
+        if not hasattr(obj,attr_name): return f(default)
         attr=getattr(obj,attr_name)
-        if attr==getattr(self,attr_name): return default
+        if attr==getattr(self,attr_name): return f(default)
         if callable(attr):
             return attr(*args,**kwargs)
         else:
