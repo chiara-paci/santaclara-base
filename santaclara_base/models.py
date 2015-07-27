@@ -703,10 +703,10 @@ class ConcreteSubclassableAbstract(models.Model):
             if callable(default): return default()
             return default
         obj=self.actual
-        if not obj: return(f(default))
-        if not hasattr(obj,attr_name): return f(default)
+        if not obj: return(f())
+        if not hasattr(obj,attr_name): return f()
         attr=getattr(obj,attr_name)
-        if attr==getattr(self,attr_name): return f(default)
+        if attr==getattr(self,attr_name): return f()
         if callable(attr):
             return attr(*args,**kwargs)
         else:
