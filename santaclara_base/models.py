@@ -676,7 +676,6 @@ class ConcreteSubclassableAbstract(models.Model):
     class Meta:
         abstract = True
 
-    @cached_property
     def actual(self):
         model = self.actual_model
         mymodel = unicode(self.__class__.__name__).lower()
@@ -703,7 +702,7 @@ class ConcreteSubclassableAbstract(models.Model):
         def f():
             if callable(default): return default()
             return default
-        obj=self.actual
+        obj=self.actual()
         if not obj: return(f())
         if not hasattr(obj,attr_name): return f()
         attr=getattr(obj,attr_name)
