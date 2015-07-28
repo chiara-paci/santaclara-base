@@ -702,7 +702,7 @@ class ConcreteSubclassableAbstract(models.Model):
         def f():
             if callable(default): return default()
             return default
-        obj=self.actual
+        obj=self.actual()
         if not obj: return(f())
         if not hasattr(obj,attr_name): return f()
         attr=getattr(obj,attr_name)
